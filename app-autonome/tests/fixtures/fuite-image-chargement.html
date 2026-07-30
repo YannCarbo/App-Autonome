@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — fuite runtime au chargement</title>
+<!-- Fichier de TEST NÉGATIF du skill : il contient VOLONTAIREMENT une fuite réseau.
+     Ne JAMAIS s'en inspirer pour construire un outil.
+     La fuite (new Image().src) est invisible pour l'analyse statique : aucune balise,
+     aucune API interdite — juste une propriété DOM. Attendu : validateur 0 erreur,
+     smoke test ÉCHEC (1 requête sortante détectée au chargement).
+     Domaine en .invalid (RFC 2606) : ne peut jamais résoudre, même hors harnais. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Fixture fuite au chargement</h1>
+  <span class="version">V1.0 du 20/07/2026</span>
+</header>
+<main>
+  <p>Cette fixture tente d'envoyer une requête réseau dès l'ouverture, par un canal que seule l'exécution révèle.</p>
+</main>
+<footer>
+  Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+// URL construite dynamiquement : le validateur statique ne peut pas la voir,
+// c'est précisément ce que l'assertion réseau du smoke test doit attraper.
+var pixel = new Image();
+pixel.src = "https://fuite-test.invalid/px.gif";
+</script>
+</body>
+</html>

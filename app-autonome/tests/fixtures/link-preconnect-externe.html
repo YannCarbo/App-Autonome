@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://polices-test.invalid">
+<title>Fixture — preconnect externe</title>
+<!-- Fichier de TEST NÉGATIF du skill : il contient VOLONTAIREMENT une violation.
+     Ne JAMAIS s'en inspirer pour construire un outil.
+     Un <link rel="preconnect"> n'émet AUCUNE requête interceptable : c'est une
+     connexion ouverte en avance (DNS/TCP/TLS), pas un chargement. Le validateur
+     statique l'attrape comme <link> externe ; le smoke test doit l'attraper en
+     inspectant le DOM vivant — sa seule défense pour un fichier qui n'a pas la
+     structure du gabarit et échappe donc au validateur (cas réel : le preconnect
+     Google Fonts de la hero page docs/index.html, corrigé dans la PR #6).
+     Attendu : validateur 1 erreur (<link> externe), smoke test ÉCHEC (préconnexion).
+     Domaine en .invalid (RFC 2606) : ne peut jamais résoudre, même hors harnais. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Fixture preconnect externe</h1>
+  <span class="version">V1.0 du 27/07/2026</span>
+</header>
+<main>
+  <p>Cette fixture déclare une préconnexion vers l'extérieur : aucune donnée ne part, mais une connexion s'ouvrirait dès l'ouverture du fichier.</p>
+</main>
+<footer>
+  Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+document.querySelector("main p").textContent += " (fixture de test des garde-fous)";
+</script>
+</body>
+</html>

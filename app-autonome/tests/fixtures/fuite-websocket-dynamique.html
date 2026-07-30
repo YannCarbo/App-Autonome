@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — fuite WebSocket dynamique</title>
+<!-- Fichier de TEST NÉGATIF du skill : il contient VOLONTAIREMENT une fuite réseau.
+     Ne JAMAIS s'en inspirer pour construire un outil.
+     Le constructeur WebSocket est résolu dynamiquement (window["WebSock"+"et"]) :
+     aucun « new WebSocket( » à voir pour le validateur statique. Et un handshake
+     WebSocket n'apparaît pas dans l'interception route() classique : cette fixture
+     exerce précisément le capteur routeWebSocket du smoke test — sans elle, une
+     régression de ce capteur passerait inaperçue.
+     Attendu : validateur 0 erreur, smoke test ÉCHEC (1 requête sortante).
+     Domaine en .invalid (RFC 2606) : ne peut jamais résoudre, même hors harnais. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Fixture fuite WebSocket dynamique</h1>
+  <span class="version">V1.0 du 27/07/2026</span>
+</header>
+<main>
+  <p>Cette fixture tente d'ouvrir une connexion WebSocket dès l'ouverture, par un constructeur résolu dynamiquement que seule l'exécution révèle.</p>
+</main>
+<footer>
+  Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+// Constructeur résolu dynamiquement : invisible pour l'analyse statique — seul
+// le capteur routeWebSocket du smoke test peut journaliser ce handshake.
+try {
+  var Constructeur = window["WebSock" + "et"];
+  new Constructeur("wss://fuite-test.invalid/flux");
+} catch (e) { /* même bloquée, la tentative doit avoir été journalisée */ }
+</script>
+</body>
+</html>

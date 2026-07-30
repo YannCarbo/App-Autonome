@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — meta refresh vers URL</title>
+<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
+     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
+     Un refresh SANS url= recharge le même fichier (inoffensif) ; avec url=,
+     c'est une redirection automatique vers l'extérieur.
+     Attendu : validateur ERREUR (meta-refresh). -->
+<meta http-equiv="refresh" content="0;url=https://site.invalid/">
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>body { font-family: system-ui, sans-serif; }</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Fixture meta refresh</h1> <span class="version">V1.0 du 20/07/2026</span></header>
+<main><p>Cette page se redirige toute seule vers un site externe.</p></main>
+<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — sendBeacon en APP CODE</title>
+<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
+     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
+     sendBeacon est conçu précisément pour ENVOYER des données en arrière-plan.
+     Attendu : validateur ERREUR « navigator.sendBeacon() détecté dans APP CODE ». -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>body { font-family: system-ui, sans-serif; }</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Fixture sendBeacon</h1> <span class="version">V1.0 du 20/07/2026</span></header>
+<main><p>Le code applicatif contient un sendBeacon, interdit.</p></main>
+<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+function envoyerStats(donnees) {
+  navigator.sendBeacon("https://telemetrie.invalid/b", donnees);
+}
+if (false) { envoyerStats("x"); }
+</script>
+</body>
+</html>

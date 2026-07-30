@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — script src externe</title>
+<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
+     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
+     Attendu : validateur ERREUR « ressource(s) chargée(s) au runtime » (script-src). -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>body { font-family: system-ui, sans-serif; }</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Fixture script externe</h1> <span class="version">V1.0 du 20/07/2026</span></header>
+<main><p>La section LIBRARIES charge un script depuis un CDN au lieu de l'inliner.</p></main>
+<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+<script src="https://cdn.invalid/lib.js"></script>
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+</script>
+</body>
+</html>

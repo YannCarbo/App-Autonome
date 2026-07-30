@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — worker fichier et module ES</title>
+<!-- Fichier de TEST NÉGATIF du skill : violations volontaires pour vérifier le
+     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
+     Un Worker chargé depuis un fichier .js est bloqué en file:// (origine null),
+     et un module ES est bloqué par CORS.
+     Attendu : validateur 2 ERREURS — « new Worker » fichier et « module ». -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>body { font-family: system-ui, sans-serif; }</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Fixture worker et module</h1> <span class="version">V1.0 du 20/07/2026</span></header>
+<main><p>Un worker séparé et un module ES : deux morts assurées en double-clic.</p></main>
+<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script type="module"></script>
+<script>
+"use strict";
+function lancerTraitement() {
+  return new Worker("traitement.js");
+}
+if (false) { lancerTraitement(); }
+</script>
+</body>
+</html>

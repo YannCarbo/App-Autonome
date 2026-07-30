@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — link stylesheet relative</title>
+<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
+     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
+     Une feuille de style RELATIVE n'est pas une URL internet, mais un fichier
+     séparé : il casse la promesse du fichier unique (l'ancien validateur ne
+     signalait que les <link> http(s)).
+     Attendu : validateur ERREUR (link-stylesheet). -->
+<link rel="stylesheet" href="style.css">
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>body { font-family: system-ui, sans-serif; }</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Fixture link relative</h1> <span class="version">V1.0 du 20/07/2026</span></header>
+<main><p>Le style principal est censé venir d'un fichier style.css séparé.</p></main>
+<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+</script>
+</body>
+</html>

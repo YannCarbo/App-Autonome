@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture saine minimale</title>
+<!-- Fixture POSITIVE de la suite de tests du skill : un outil minimal conforme.
+     Attendu : validateur 0 erreur, smoke test 0 requête sortante. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; }
+  header { border-bottom: 2px solid #1a5fb4; padding: 12px 20px; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+  footer { text-align: center; font-size: 0.8rem; color: #5c6675; padding: 16px; }
+  .onglet { background: none; border: none; padding: 8px 14px; cursor: pointer; }
+  .onglet.actif { color: #1a5fb4; font-weight: 600; }
+  .panneau[hidden] { display: none; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header>
+  <h1>Fixture saine minimale</h1>
+  <span class="version">V1.0 du 20/07/2026</span>
+</header>
+<main>
+  <nav class="onglets" role="tablist">
+    <button type="button" class="onglet actif" data-onglet="traitement" role="tab" aria-selected="true">Traitement</button>
+    <button type="button" class="onglet" data-onglet="regles" role="tab" aria-selected="false">Règles de l'outil</button>
+  </nav>
+  <section class="panneau" data-panneau="traitement" role="tabpanel">
+    <p>Zone de traitement de la fixture : aucun réseau, aucun fichier externe.</p>
+  </section>
+  <section class="panneau" data-panneau="regles" role="tabpanel" hidden>
+    <p>Cet outil de test ne fait rien : il vérifie que les garde-fous laissent passer un outil conforme.</p>
+  </section>
+</main>
+<footer>
+  Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+
+function activerOnglet(nom) {
+  document.querySelectorAll(".onglet").forEach(bouton => {
+    const actif = bouton.dataset.onglet === nom;
+    bouton.classList.toggle("actif", actif);
+    bouton.setAttribute("aria-selected", String(actif));
+  });
+  document.querySelectorAll(".panneau").forEach(panneau => {
+    panneau.hidden = panneau.dataset.panneau !== nom;
+  });
+}
+document.querySelectorAll(".onglet").forEach(bouton =>
+  bouton.addEventListener("click", () => activerOnglet(bouton.dataset.onglet)));
+</script>
+</body>
+</html>

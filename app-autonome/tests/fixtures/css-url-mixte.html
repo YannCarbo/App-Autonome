@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — url() CSS externe et relative</title>
+<!-- Fichier de TEST NÉGATIF du skill : violations volontaires pour vérifier le
+     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
+     Deux url() dans le <style> : une externe (CDN) et une relative (fichier à côté).
+     Attendu : validateur 2 ERREURS — « url()/@import CSS externe » et
+     « url() CSS relative ». -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; }
+  .banniere { background-image: url(https://cdn.invalid/bg.png); }
+  .motif { background-image: url(images/fond.png); }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Fixture CSS mixte</h1> <span class="version">V1.0 du 20/07/2026</span></header>
+<main class="banniere"><p class="motif">Deux fonds d'écran chargés depuis l'extérieur du fichier.</p></main>
+<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+</script>
+</body>
+</html>

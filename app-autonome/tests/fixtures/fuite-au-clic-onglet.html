@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fixture — fuite runtime au clic</title>
+<!-- Fichier de TEST NÉGATIF du skill : il contient VOLONTAIREMENT une fuite réseau.
+     Ne JAMAIS s'en inspirer pour construire un outil.
+     La fuite ne part PAS au chargement : seulement au clic sur l'onglet « Règles ».
+     Elle vérifie que la fenêtre d'observation du smoke test couvre l'interaction
+     générique (clic sur chaque onglet), pas seulement le chargement.
+     Attendu : validateur 0 erreur, smoke test ÉCHEC (1 requête sortante). -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+  .onglet { background: none; border: none; padding: 8px 14px; cursor: pointer; }
+  .onglet.actif { color: #1a5fb4; font-weight: 600; }
+  .panneau[hidden] { display: none; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Fixture fuite au clic</h1>
+  <span class="version">V1.0 du 20/07/2026</span>
+</header>
+<main>
+  <nav class="onglets" role="tablist">
+    <button type="button" class="onglet actif" data-onglet="traitement" role="tab" aria-selected="true">Traitement</button>
+    <button type="button" class="onglet" data-onglet="regles" role="tab" aria-selected="false">Règles de l'outil</button>
+  </nav>
+  <section class="panneau" data-panneau="traitement" role="tabpanel">
+    <p>Rien ne part au chargement : la fuite attend un clic d'onglet.</p>
+  </section>
+  <section class="panneau" data-panneau="regles" role="tabpanel" hidden>
+    <p>Ouvrir cet onglet déclenche la tentative de requête.</p>
+  </section>
+</main>
+<footer>
+  Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+
+function activerOnglet(nom) {
+  document.querySelectorAll(".onglet").forEach(bouton => {
+    const actif = bouton.dataset.onglet === nom;
+    bouton.classList.toggle("actif", actif);
+    bouton.setAttribute("aria-selected", String(actif));
+  });
+  document.querySelectorAll(".panneau").forEach(panneau => {
+    panneau.hidden = panneau.dataset.panneau !== nom;
+  });
+  if (nom === "regles") {
+    // Fuite volontaire déclenchée par l'interaction — invisible au chargement.
+    var pixel = new Image();
+    pixel.src = "https://fuite-test.invalid/clic.gif";
+  }
+}
+document.querySelectorAll(".onglet").forEach(bouton =>
+  bouton.addEventListener("click", () => activerOnglet(bouton.dataset.onglet)));
+</script>
+</body>
+</html>
