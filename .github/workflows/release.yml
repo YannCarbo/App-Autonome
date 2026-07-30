@@ -11,6 +11,8 @@ on:
     branches: [main]
     paths:
       - 'app-autonome/**'
+  # Déclenchement manuel (onglet Actions) : re-publier sans commit sur les sources.
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -30,9 +32,12 @@ jobs:
 
       - name: Construire le .skill
         env:
+          # Surtout ne pas nommer une variable « ZIP » : Info-ZIP lit les variables
+          # d'environnement ZIP et ZIPOPT comme options par défaut, et l'archive
+          # serait alors créée sous le mauvais nom, silencieusement.
           SRC: app-autonome
           OUT: app-autonome.skill
-          ZIP: app-autonome.zip
+          ZIP_COPY: app-autonome.zip
         run: |
           set -euo pipefail
           # Garde-fou : la description doit tenir en 500 caractères — limite la plus
@@ -56,9 +61,9 @@ jobs:
             | LC_ALL=C sort | TZ=UTC zip -qX -@ "$OUT"
           # Second artefact pour l'import « dossier » (Mistral/Gemini) : copie octet
           # pour octet du .skill, donc tout aussi déterministe.
-          cp "$OUT" "$ZIP"
+          cp "$OUT" "$ZIP_COPY"
           unzip -l "$OUT"
-          sha256sum "$OUT" "$ZIP"
+          sha256sum "$OUT" "$ZIP_COPY"
 
       - name: Calculer la version
         env:
