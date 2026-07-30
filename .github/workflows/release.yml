@@ -71,7 +71,10 @@ jobs:
         run: |
           set -euo pipefail
           # Patch incrémenté depuis la dernière Release (v1.0.0 s'il n'y en a aucune).
-          LAST=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name 2>/dev/null || echo "")
+          # Sans release, l'API répond 404 et gh imprime le corps JSON de l'erreur sur
+          # stdout : un « || echo "" » dans la substitution ne vide donc rien, il faut
+          # réassigner LAST hors de la capture pour retomber sur le fallback.
+          LAST=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name 2>/dev/null) || LAST=""
           if [ -z "$LAST" ]; then
             TAG="v1.0.0"
           else
