@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fixture — fetch en APP CODE</title>
-<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
-     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
-     Attendu : validateur ERREUR « fetch() détecté dans APP CODE ». -->
+<title>Fixture: fetch in APP CODE</title>
+<!-- NEGATIVE test file of the skill: deliberate violation to check the
+     validator. NEVER use it as inspiration to build a tool.
+     Expected: validator ERROR "fetch() detected in APP CODE". -->
 
 <!-- ===== SECTION: STYLES ===== -->
 <style>body { font-family: system-ui, sans-serif; }</style>
@@ -13,19 +13,19 @@
 <!-- ===== SECTION: MARKUP ===== -->
 </head>
 <body>
-<header><h1>Fixture fetch</h1> <span class="version">V1.0 du 20/07/2026</span></header>
-<main><p>Le code applicatif contient un fetch(), interdit.</p></main>
-<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+<header><h1>Fetch fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
+<main><p>The application code contains a fetch(), which is forbidden.</p></main>
+<footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
 
-<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
 
 <!-- ===== SECTION: APP CODE ===== -->
 <script>
 "use strict";
-function chargerDonnees() {
-  return fetch("https://api.invalid/donnees");
+function loadData() {
+  return fetch("https://api.invalid/data");
 }
-if (false) { chargerDonnees(); }
+if (false) { loadData(); }
 </script>
 </body>
 </html>

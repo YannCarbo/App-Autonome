@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>App Autonome · Local tools built with AI</title>
-<meta name="description" content="Use AI to turn your working routines into offline, single-file HTML tools. They open with a double-click, and your data never leaves your computer.">
-<link rel="canonical" href="https://yanncarbo.github.io/App-Autonome/">
+<title>App Autonome · Outils locaux créés avec l’IA</title>
+<meta name="description" content="Transformez vos procédures en outils locaux hors ligne grâce à l'IA : des fichiers HTML uniques qui s'ouvrent par double-clic et gardent vos données sur votre poste.">
+<link rel="canonical" href="https://yanncarbo.github.io/App-Autonome/fr/">
 <link rel="alternate" hreflang="en" href="https://yanncarbo.github.io/App-Autonome/">
 <link rel="alternate" hreflang="fr" href="https://yanncarbo.github.io/App-Autonome/fr/">
 <link rel="alternate" hreflang="x-default" href="https://yanncarbo.github.io/App-Autonome/">
-<meta property="og:title" content="App Autonome · Local tools built with AI">
-<meta property="og:description" content="Use AI to build your tool. Not to run it.">
+<meta property="og:title" content="App Autonome · Outils locaux créés avec l’IA">
+<meta property="og:description" content="Utilisez l'IA pour créer votre outil. Pas pour le faire tourner.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://yanncarbo.github.io/App-Autonome/">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:url" content="https://yanncarbo.github.io/App-Autonome/fr/">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231E7354'/%3E%3Crect x='11' y='11' width='10' height='10' rx='3' fill='%235FCF9E'/%3E%3C/svg%3E">
 
 <!-- ===== SECTION: STYLES ===== -->
@@ -291,11 +291,6 @@ overflow:hidden}
   .button,.example-card,.github-link,.start-link,.lang-link{transition:none}
   .button:hover,.example-card:hover,.github-link:hover,.start-link:hover{transform:none}
 }
-/* EN-only spacing: the English hero title runs three lines against four in
-   French, so extra breathing room keeps the two heroes visually matched.
-   (fr/index.html does not carry this block.) */
-.hero-row{padding-top:clamp(56px,6.2vw,88px);padding-bottom:clamp(34px,4vw,56px)}
-.hero-lede{margin:30px 0 40px}
 </style>
 
 <!-- ===== SECTION: MARKUP ===== -->
@@ -304,9 +299,9 @@ overflow:hidden}
 
 <section class="hero-shell">
 <header class="site-header">
-<nav class="lang-switch" aria-label="Language">
-<span class="lang-link is-current" aria-current="true" lang="en"><svg viewBox="0 0 60 30" width="18" height="12" aria-hidden="true"><clipPath id="uk-flag"><rect width="60" height="30"/></clipPath><g clip-path="url(#uk-flag)"><rect width="60" height="30" fill="#012169"/><path d="M0 0 60 30M60 0 0 30" stroke="#fff" stroke-width="6"/><path d="M0 0 60 30M60 0 0 30" stroke="#C8102E" stroke-width="2.4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g></svg>EN</span>
-<a class="lang-link" href="fr/index.html" hreflang="fr" lang="fr" data-lang-choice="fr"><svg viewBox="0 0 3 2" width="18" height="12" aria-hidden="true"><rect width="1" height="2" fill="#0055A4"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#EF4135"/></svg>FR</a>
+<nav class="lang-switch" aria-label="Langue">
+<a class="lang-link" href="../index.html" hreflang="en" lang="en" data-lang-choice="en"><svg viewBox="0 0 60 30" width="18" height="12" aria-hidden="true"><clipPath id="uk-flag"><rect width="60" height="30"/></clipPath><g clip-path="url(#uk-flag)"><rect width="60" height="30" fill="#012169"/><path d="M0 0 60 30M60 0 0 30" stroke="#fff" stroke-width="6"/><path d="M0 0 60 30M60 0 0 30" stroke="#C8102E" stroke-width="2.4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g></svg>EN</a>
+<span class="lang-link is-current" aria-current="true" lang="fr"><svg viewBox="0 0 3 2" width="18" height="12" aria-hidden="true"><rect width="1" height="2" fill="#0055A4"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#EF4135"/></svg>FR</span>
 </nav>
 <a class="github-link" href="https://github.com/YannCarbo/App-Autonome">
 <svg aria-hidden="true" fill="currentColor" height="16" viewBox="0 0 16 16" width="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
@@ -314,223 +309,218 @@ overflow:hidden}
 </header>
 <div class="hero-stack">
 <div class="hero-row">
-<div class="hero-copy surface-card"><h1 class="hero-title">Use AI to <span>build</span> your tool.<br>Not to run it.</h1>
-<p class="hero-lede">Use AI to turn your working routines into local applications, then run them without it. Explainable, predictable tools you can share like a plain file, and your data never leaves your computer.</p>
-<!-- MIGRATION: the "YannCarbo/App-Autonome" slug is hard-coded in the download links (.skill / .zip) and "GitHub repository": here (hero) and below in "Getting started". Absolute Release URLs (github.com) because the site is served from github.io. Same layout exists in fr/index.html: keep both pages in sync. -->
+<div class="hero-copy surface-card"><h1 class="hero-title">Utilisez l'IA pour <span>créer</span> votre outil. Pas pour le faire tourner.</h1>
+<p class="hero-lede">Transformez vos procédures en applications locales grâce à l'IA, puis utilisez-les sans elle. Des outils explicables et reproductibles, faciles à partager, qui gardent vos données sur votre poste.</p>
+<!-- MIGRATION : le slug « YannCarbo/App-Autonome » est codé en dur dans les liens de téléchargement (.skill / .zip) et « Dépôt GitHub » : ici (hero) et plus bas dans « Pour commencer ». URLs de Release absolues (github.com) car le site est servi depuis github.io. La même mise en page existe en anglais dans ../index.html : garder les deux pages synchronisées. -->
 <div class="cta-row">
-<a class="button button-primary" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.skill">↓ Download the .skill<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g stroke="#F0B89E" stroke-width="1.9" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="21.5" y2="12"/><line x1="7.25" y1="3.77" x2="16.75" y2="20.23"/><line x1="16.75" y1="3.77" x2="7.25" y2="20.23"/><line x1="3.77" y1="7.25" x2="20.23" y2="16.75"/><line x1="20.23" y1="7.25" x2="3.77" y2="16.75"/></g></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="12" rx="3.4" ry="9"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(120 12 12)"/></g></svg></span></a>
-<a class="button button-secondary" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.zip">↓ Download the .zip<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="3.6" fill="#FFCE31"/><rect x="3" y="6.6" width="18" height="3.6" fill="#FFA100"/><rect x="3" y="10.2" width="18" height="3.6" fill="#FF7000"/><rect x="3" y="13.8" width="18" height="3.6" fill="#F54D00"/><rect x="3" y="17.4" width="18" height="3.6" fill="#E00600"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="gg-hero" x1="3" y1="4" x2="21" y2="20" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4285F4"/><stop offset="1" stop-color="#9B72CB"/></linearGradient></defs><path d="M12 2c0 5.52 4.48 10 10 10-5.52 0-10 4.48-10 10 0-5.52-4.48-10-10-10 5.52 0 10-4.48 10-10z" fill="url(#gg-hero)"/></svg></span></a>
-<a class="button button-secondary" href="#examples">Examples →</a>
+<a class="button button-primary" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.skill">↓ Télécharger le .skill<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g stroke="#F0B89E" stroke-width="1.9" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="21.5" y2="12"/><line x1="7.25" y1="3.77" x2="16.75" y2="20.23"/><line x1="16.75" y1="3.77" x2="7.25" y2="20.23"/><line x1="3.77" y1="7.25" x2="20.23" y2="16.75"/><line x1="20.23" y1="7.25" x2="3.77" y2="16.75"/></g></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="12" rx="3.4" ry="9"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(120 12 12)"/></g></svg></span></a>
+<a class="button button-secondary" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.zip">↓ Télécharger le .zip<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="3.6" fill="#FFCE31"/><rect x="3" y="6.6" width="18" height="3.6" fill="#FFA100"/><rect x="3" y="10.2" width="18" height="3.6" fill="#FF7000"/><rect x="3" y="13.8" width="18" height="3.6" fill="#F54D00"/><rect x="3" y="17.4" width="18" height="3.6" fill="#E00600"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="gg-hero" x1="3" y1="4" x2="21" y2="20" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4285F4"/><stop offset="1" stop-color="#9B72CB"/></linearGradient></defs><path d="M12 2c0 5.52 4.48 10 10 10-5.52 0-10 4.48-10 10 0-5.52-4.48-10-10-10 5.52 0 10-4.48 10-10z" fill="url(#gg-hero)"/></svg></span></a>
+<a class="button button-secondary" href="#examples">Exemples →</a>
 </div>
 </div>
 <div class="hero-demo">
 <div class="demo-bar">
-<span class="demo-filename">supplier-formatter.html</span>
+<span class="demo-filename">formateur-fournisseur.html</span>
 </div>
 <div class="demo-body">
 <div class="file-card">
 <svg aria-hidden="true" fill="none" height="22" viewBox="0 0 22 26" width="18"><path d="M2 1h12l6 6v18H2z" stroke="#5FCF9E" stroke-width="1.8"></path><path d="M6 12h10M6 16h7M6 20h10" stroke="#4A5A52" stroke-width="1.8"></path></svg>
 <div>
-<div class="file-name">supplier_export_july.xlsx</div>
-<div class="file-meta">212 rows · stays on your computer</div>
+<div class="file-name">export_fournisseur_juillet.xlsx</div>
+<div class="file-meta">212 lignes · reste sur votre poste</div>
 </div>
 </div>
 <div class="stats-grid">
-<div class="stat-card"><div class="stat-number">212</div><div class="stat-label">read</div></div>
-<div class="stat-card"><div class="stat-number">208</div><div class="stat-label">transformed</div></div>
-<div class="stat-card stat-card-alert"><div class="stat-number">4</div><div class="stat-label">to review</div></div>
+<div class="stat-card"><div class="stat-number">212</div><div class="stat-label">lues</div></div>
+<div class="stat-card"><div class="stat-number">208</div><div class="stat-label">transformées</div></div>
+<div class="stat-card stat-card-alert"><div class="stat-number">4</div><div class="stat-label">à vérifier</div></div>
 </div>
-<div class="demo-alert">Ambiguous rows flagged one by one, never silently fixed.</div>
+<div class="demo-alert">Cas ambigus signalés ligne par ligne, jamais corrigés en silence.</div>
 </div>
 </div>
 </div>
 <div class="feature-grid">
 <div class="feature-card surface-card">
 <div class="feature-icon"><svg aria-hidden="true" fill="none" height="19" viewBox="0 0 24 24" width="19"><rect height="11" rx="2" stroke="#1E7A55" stroke-width="1.8" width="16" x="4" y="10"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#1E7A55" stroke-width="1.8"></path><circle cx="12" cy="15.5" fill="#1E7A55" r="1.6"></circle></svg></div>
-<h2 class="feature-title">100% local</h2>
-<p class="feature-text">Your data never leaves your computer. Ever.</p>
+<h2 class="feature-title">100 % local</h2>
+<p class="feature-text">Les données ne quittent jamais l'ordinateur.</p>
 </div>
 <div class="feature-card surface-card">
 <div class="feature-icon"><svg aria-hidden="true" fill="none" height="19" viewBox="0 0 24 24" width="19"><circle cx="9" cy="8" r="3.2" stroke="#1E7A55" stroke-width="1.8"></circle><path d="M3.5 20c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5" stroke="#1E7A55" stroke-linecap="round" stroke-width="1.8"></path><circle cx="17" cy="9.5" r="2.4" stroke="#1E7A55" stroke-width="1.8"></circle><path d="M16.5 15.2c2.2.3 3.6 1.7 4 4" stroke="#1E7A55" stroke-linecap="round" stroke-width="1.8"></path></svg></div>
-<h2 class="feature-title">Built for teams</h2>
-<p class="feature-text">Share a single HTML file with colleagues, like any other document.</p>
+<h2 class="feature-title">Pensé pour les équipes</h2>
+<p class="feature-text">Partagez un simple fichier HTML à vos collègues.</p>
 </div>
 <div class="feature-card surface-card">
 <div class="feature-icon"><svg aria-hidden="true" fill="none" height="19" viewBox="0 0 24 24" width="19"><path d="M9 8V5a3 3 0 0 1 6 0v3" stroke="#1E7A55" stroke-linecap="round" stroke-width="1.8"></path><path d="M12 12v4" stroke="#1E7A55" stroke-linecap="round" stroke-width="1.8"></path><path d="M7 8h10l-1 8.5a3 3 0 0 1-3 2.5h-2a3 3 0 0 1-3-2.5z" stroke="#1E7A55" stroke-linejoin="round" stroke-width="1.8"></path><path d="M4 3l16 18" stroke="#1E7A55" stroke-linecap="round" stroke-width="1.8"></path></svg></div>
-<h2 class="feature-title">No AI dependency</h2>
-<p class="feature-text">No credits, no subscriptions, no model to call at runtime.</p>
+<h2 class="feature-title">Sans dépendance IA</h2>
+<p class="feature-text">Aucun crédit, aucun abonnement, aucun modèle à appeler.</p>
 </div>
 <div class="feature-card surface-card">
 <div class="feature-icon"><svg aria-hidden="true" fill="none" height="19" viewBox="0 0 24 24" width="19"><path d="M12 5.5C10.5 4 8.6 3.5 6 3.5c-1 0-2 .1-2.5.3V19c.5-.2 1.5-.3 2.5-.3 2.6 0 4.5.5 6 1.8 1.5-1.3 3.4-1.8 6-1.8 1 0 2 .1 2.5.3V3.8c-.5-.2-1.5-.3-2.5-.3-2.6 0-4.5.5-6 2z" stroke="#1E7A55" stroke-linejoin="round" stroke-width="1.8"></path><path d="M12 5.5v15" stroke="#1E7A55" stroke-width="1.8"></path></svg></div>
-<h2 class="feature-title">Explicit rules</h2>
-<p class="feature-text">Written-down, predictable behavior that's easy to evolve.</p>
+<h2 class="feature-title">Règles explicites</h2>
+<p class="feature-text">Comportement reproductible, facile à faire évoluer.</p>
 </div>
 <div class="feature-card surface-card feature-accent">
 <div class="feature-icon"><svg aria-hidden="true" fill="none" height="19" viewBox="0 0 24 24" width="19"><path d="M13 2L4 14h6l-1 8 9-12h-6z" stroke="#fff" stroke-linejoin="round" stroke-width="1.8"></path></svg></div>
-<h2 class="feature-title">Created in minutes</h2>
-<p class="feature-text">Describe your rules and get a working tool right away.</p>
+<h2 class="feature-title">Créé en quelques minutes</h2>
+<p class="feature-text">Décrivez vos règles, obtenez un outil immédiatement.</p>
 </div>
 </div>
 </div>
 </section>
 <section class="content-shell">
-<!-- Examples -->
+<!-- Exemples -->
 <div class="examples-section" id="examples">
-<div class="example-intro"><h2 class="section-title">See the examples</h2>
-<p class="section-lede">Three real tools, generated exactly the way the skill produces them.</p>
-<div class="example-note">Every demo is itself a self-contained tool: the page you open is the deliverable.</div>
+<div class="example-intro"><h2 class="section-title">Voir des exemples</h2>
+<p class="section-lede">Trois vrais outils, générés exactement comme le skill les produit.</p>
+<div class="example-note">Chaque démo est elle-même un outil autonome : la page ouverte est le livrable.</div>
 </div>
-<a class="example-card surface-card" href="sales-dashboard-v1.1.html" rel="noopener" target="_blank"><span class="example-index">01</span>
-<h3 class="example-title">Turn an Excel export into a dashboard</h3>
-<p class="example-copy">Top clients, date ranges, drill-down on click. All of it stays in your browser.</p>
-<div class="example-link">try the tool →</div>
+<a class="example-card surface-card" href="tableau-de-bord-v1.1.html" rel="noopener" target="_blank"><span class="example-index">01</span>
+<h3 class="example-title">Visualiser un export Excel en tableau de bord</h3>
+<p class="example-copy">Top clients, période, détail au clic. Tout reste dans le navigateur.</p>
+<div class="example-link">essayer l'outil →</div>
 </a>
-<a class="example-card surface-card" href="supplier-formatter-v1.0.html" rel="noopener" target="_blank"><span class="example-index">02</span>
-<h3 class="example-title">Reformat a supplier file for the ERP</h3>
-<p class="example-copy">Dates, weights and references normalized. Suspect rows are flagged one by one.</p>
-<div class="example-link">try the tool →</div>
+<a class="example-card surface-card" href="formateur-fournisseur-v1.0.html" rel="noopener" target="_blank"><span class="example-index">02</span>
+<h3 class="example-title">Reformater un fichier fournisseur pour l'ERP</h3>
+<p class="example-copy">Dates, poids et références normalisés. Les cas douteux sont signalés ligne par ligne.</p>
+<div class="example-link">essayer l'outil →</div>
 </a>
-<a class="example-card surface-card" href="compress-pdf-v1.0.html" rel="noopener" target="_blank"><span class="example-index">03</span>
-<h3 class="example-title">Shrink a PDF that's too big to email</h3>
-<p class="example-copy">A photo-heavy deck reworked into a much lighter file. Nothing gets uploaded.</p>
-<div class="example-link">try the tool →</div>
+<a class="example-card surface-card" href="compresse-pdf-v1.0.html" rel="noopener" target="_blank"><span class="example-index">03</span>
+<h3 class="example-title">Alléger un PDF trop lourd pour le mail</h3>
+<p class="example-copy">Une présentation pleine de photos repassée en version plus légère. Rien n'est envoyé en ligne.</p>
+<div class="example-link">essayer l'outil →</div>
 </a>
 </div>
-<!-- Reliability -->
+<!-- Fiabilité -->
 <div class="reliability-section">
-<div class="reliability-copy surface-card"><h2 class="section-title">Results worthy of your data.</h2>
-<p class="section-lede">Your AI already knows how to generate a web page. The skill adds the guardrails you need when the data ends up in accounting, the ERP or a customs declaration.</p>
-<div class="reliability-quote">A tool that misses a case but flags it is acceptable. A tool that silently corrects it is not.</div>
+<div class="reliability-copy surface-card"><h2 class="section-title">Un résultat digne de vos données.</h2>
+<p class="section-lede">Générer une page web, votre IA sait déjà. Le skill impose des garde-fous pour les données qui finissent en compta, dans l'ERP ou en douane.</p>
+<div class="reliability-quote">Un outil qui rate un cas mais l'affiche est acceptable. Un outil qui le corrige en silence ne l'est pas.</div>
 </div>
 <div class="reliability-list surface-card">
 <div class="reliability-row">
-<span class="reliability-label">Before / after preview</span>
-<span class="reliability-value">You see the transformed data before you download anything.</span>
+<span class="reliability-label">Aperçu avant / après</span>
+<span class="reliability-value">Vous voyez les données transformées avant de télécharger quoi que ce soit.</span>
 </div>
 <div class="reliability-row">
-<span class="reliability-label">A full tally</span>
-<span class="reliability-value">"212 read, 208 transformed, 4 anomalies", each one with its row number.</span>
+<span class="reliability-label">Rapport chiffré</span>
+<span class="reliability-value">« 212 lues, 208 transformées, 4 anomalies », avec le numéro de chaque ligne.</span>
 </div>
 <div class="reliability-row">
-<span class="reliability-label">No silent fixes</span>
-<span class="reliability-value">An ambiguous case is flagged, never guessed at.</span>
+<span class="reliability-label">Zéro correction silencieuse</span>
+<span class="reliability-value">Un cas ambigu est signalé, jamais deviné.</span>
 </div>
 <div class="reliability-row">
-<span class="reliability-label">The original, untouched</span>
-<span class="reliability-value">The output gets its own name. Your file is never overwritten.</span>
+<span class="reliability-label">L'original intact</span>
+<span class="reliability-value">Le résultat porte un autre nom. Votre fichier n'est jamais écrasé.</span>
 </div>
 <div class="reliability-row">
-<span class="reliability-label">Readable rules</span>
-<span class="reliability-value">A tab spells out in plain language what the tool actually does.</span>
+<span class="reliability-label">Règles lisibles</span>
+<span class="reliability-value">Un onglet liste en langage courant ce que l'outil fait vraiment.</span>
 </div>
 </div>
 </div>
-<!-- Privacy -->
+<!-- Confidentialité -->
 <div class="privacy-section">
-<div class="privacy-copy"><h2 class="section-title">Nothing leaves your computer.</h2>
-<p class="section-lede">Everything runs in the browser of whoever uses the tool. No data is sent over the internet: not during processing, not afterwards. That's what makes these tools safe to use on client, payroll or financial data.</p>
+<div class="privacy-copy"><h2 class="section-title">Rien ne sort de l'ordinateur.</h2>
+<p class="section-lede">Tout se passe dans le navigateur de la personne qui utilise l'outil. Aucune donnée n'est envoyée sur internet, ni pendant le traitement, ni après. C'est ce qui rend ces outils utilisables sur des données clients, salariales ou financières.</p>
 </div>
 <div class="privacy-proof">
-<div class="privacy-proof-title">Turn off the Wi-Fi and see.</div>
-<p class="privacy-proof-copy">The tool keeps working exactly the same, even mid-flight. It's the simplest way to prove that nothing ever goes online.</p>
+<div class="privacy-proof-title">Coupez le Wi-Fi, pour voir.</div>
+<p class="privacy-proof-copy">L'outil continue de fonctionner exactement pareil, même en plein vol. C'est la façon la plus simple de constater que rien ne part sur internet.</p>
 </div>
 </div>
-<!-- Sovereign & agnostic -->
+<!-- Souverain & agnostique -->
 <div class="ownership-section">
 <div class="ownership-card">
-<h3 class="ownership-title">The file is yours.</h3>
-<p class="ownership-copy">It lives on your machines and in your own spaces: network drives, company email, Teams or SharePoint. No subscription keeps it running, and nobody can switch it off remotely.</p>
+<h3 class="ownership-title">Le fichier vous appartient.</h3>
+<p class="ownership-copy">Il vit sur vos machines et vos espaces : dossier réseau, messagerie d'entreprise, espace d'équipe (Teams, SharePoint…). Aucun abonnement ne conditionne son fonctionnement, personne ne peut le désactiver à distance.</p>
 </div>
 <div class="ownership-card">
-<h3 class="ownership-title">Standard HTML, nothing else.</h3>
-<p class="ownership-copy">An open format browsers have been reading for thirty years. No AI is needed to run it, and any AI can pick it up and evolve it.</p>
+<h3 class="ownership-title">Du HTML standard, rien d'autre.</h3>
+<p class="ownership-copy">Un format ouvert que n'importe quel navigateur lit depuis trente ans. Aucune IA n'est requise pour le faire fonctionner, et n'importe laquelle peut le faire évoluer.</p>
 </div>
 <div class="ownership-card ownership-accent">
-<div class="ownership-statement">It will still run in ten years.</div>
+<div class="ownership-statement">Il tournera encore dans dix ans.</div>
 </div>
 </div>
-<!-- Lifecycle -->
+<!-- Cycle de vie -->
 <div class="lifecycle-section surface-card">
-<div class="lifecycle-copy"><h2 class="section-title">The opposite of the orphaned macro.</h2>
-<p class="section-lede">A new column? A rule that changed? Send the file back to your AI, describe the change in plain English, and get a numbered new version back. The whole history fits in the file name.</p>
+<div class="lifecycle-copy"><h2 class="section-title">L'inverse de la macro orpheline.</h2>
+<p class="section-lede">Une colonne en plus, une règle qui change ? Renvoyez le fichier à votre IA, décrivez le changement en français, récupérez une version incrémentée. L'historique tient dans le nom du fichier.</p>
 </div>
 <div class="version-flow">
 <div class="version-row version-file-row">
 <span class="version-dot"></span>
-<span class="version-file">supplier-formatter-v1.0.html</span>
+<span class="version-file">formateur-fournisseur-v1.0.html</span>
 </div>
 <div class="version-row version-message-row">
 <span class="version-line-wrap"><span class="version-line"></span></span>
-<span class="version-message">"Add an Incoterm column, and the weight in grams."</span>
+<span class="version-message">« Ajoute une colonne Incoterm, et le poids en grammes. »</span>
 </div>
 <div class="version-row version-file-row">
 <span class="version-dot"></span>
-<span class="version-file">supplier-formatter-v1.1.html</span>
+<span class="version-file">formateur-fournisseur-v1.1.html</span>
 </div>
 <div class="version-row version-message-row">
 <span class="version-line-wrap"><span class="version-line"></span></span>
-<span class="version-message">"The carrier changed its date format again."</span>
+<span class="version-message">« Le transporteur a encore changé son format de dates. »</span>
 </div>
 <div class="version-row version-file-row">
 <span class="version-dot"></span>
-<span class="version-file">supplier-formatter-v1.2.html</span>
-<span class="version-current">current version</span>
+<span class="version-file">formateur-fournisseur-v1.2.html</span>
+<span class="version-current">version actuelle</span>
 </div>
 </div>
 </div>
-<!-- Getting started -->
-<div class="start-section"><h2 class="section-title">Getting started</h2>
+<!-- Pour commencer -->
+<div class="start-section"><h2 class="section-title">Pour commencer</h2>
 <div class="steps-grid">
 <div class="step-card">
 <div class="step-index">01</div>
-<h3 class="step-title">Add the skill to your AI</h3>
-<p class="step-copy">Download the skill and add it to your AI (Claude, ChatGPT, Mistral or Gemini). You only do it once.</p>
+<h3 class="step-title">Ajoutez le skill à votre IA</h3>
+<p class="step-copy">Téléchargez le skill et ajoutez-le à votre IA (Claude, ChatGPT, Mistral ou Gemini). Une seule fois.</p>
 </div>
 <div class="step-card">
 <div class="step-index">02</div>
-<h3 class="step-title">Describe what you need</h3>
-<p class="step-copy">In plain English, as you would to a colleague: the columns, the rules, the edge cases. Already have a tool or a prototype? Hand it over and it gets rebuilt as a self-contained file.</p>
+<h3 class="step-title">Décrivez votre besoin</h3>
+<p class="step-copy">En français, comme à un collègue : les colonnes, les règles, les cas limites. Déjà un outil ou une maquette ? Confiez-le : il est repris et transformé en fichier autonome.</p>
 </div>
 <div class="step-card">
 <div class="step-index">03</div>
-<h3 class="step-title">Share the file</h3>
-<p class="step-copy">Email it, drop it in the team space, send it in chat. Your colleagues double-click it. That's it.</p>
+<h3 class="step-title">Partagez le fichier</h3>
+<p class="step-copy">Par mail, messagerie d'entreprise ou espace d'équipe. Vos collègues double-cliquent. C'est tout.</p>
 </div>
 </div>
 <div class="start-cta">
-<a class="start-link start-link-primary" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.skill">↓ Download the .skill<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g stroke="#D97757" stroke-width="1.9" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="21.5" y2="12"/><line x1="7.25" y1="3.77" x2="16.75" y2="20.23"/><line x1="16.75" y1="3.77" x2="7.25" y2="20.23"/><line x1="3.77" y1="7.25" x2="20.23" y2="16.75"/><line x1="20.23" y1="7.25" x2="3.77" y2="16.75"/></g></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="12" rx="3.4" ry="9"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(120 12 12)"/></g></svg></span></a>
-<a class="start-link start-link-alt" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.zip">↓ Download the .zip<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="3.6" fill="#FFCE31"/><rect x="3" y="6.6" width="18" height="3.6" fill="#FFA100"/><rect x="3" y="10.2" width="18" height="3.6" fill="#FF7000"/><rect x="3" y="13.8" width="18" height="3.6" fill="#F54D00"/><rect x="3" y="17.4" width="18" height="3.6" fill="#E00600"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="gg-start" x1="3" y1="4" x2="21" y2="20" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7FB0F7"/><stop offset="1" stop-color="#B79BDD"/></linearGradient></defs><path d="M12 2c0 5.52 4.48 10 10 10-5.52 0-10 4.48-10 10 0-5.52-4.48-10-10-10 5.52 0 10-4.48 10-10z" fill="url(#gg-start)"/></svg></span></a>
-<a class="start-link start-link-secondary" href="https://github.com/YannCarbo/App-Autonome"><svg aria-hidden="true" focusable="false" fill="currentColor" height="15" viewBox="0 0 16 16" width="15"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>GitHub repository</a>
+<a class="start-link start-link-primary" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.skill">↓ Télécharger le .skill<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g stroke="#D97757" stroke-width="1.9" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="21.5" y2="12"/><line x1="7.25" y1="3.77" x2="16.75" y2="20.23"/><line x1="16.75" y1="3.77" x2="7.25" y2="20.23"/><line x1="3.77" y1="7.25" x2="20.23" y2="16.75"/><line x1="20.23" y1="7.25" x2="3.77" y2="16.75"/></g></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="12" rx="3.4" ry="9"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="3.4" ry="9" transform="rotate(120 12 12)"/></g></svg></span></a>
+<a class="start-link start-link-alt" href="https://github.com/YannCarbo/App-Autonome/releases/latest/download/app-autonome.zip">↓ Télécharger le .zip<span class="btn-logos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="3.6" fill="#FFCE31"/><rect x="3" y="6.6" width="18" height="3.6" fill="#FFA100"/><rect x="3" y="10.2" width="18" height="3.6" fill="#FF7000"/><rect x="3" y="13.8" width="18" height="3.6" fill="#F54D00"/><rect x="3" y="17.4" width="18" height="3.6" fill="#E00600"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="gg-start" x1="3" y1="4" x2="21" y2="20" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7FB0F7"/><stop offset="1" stop-color="#B79BDD"/></linearGradient></defs><path d="M12 2c0 5.52 4.48 10 10 10-5.52 0-10 4.48-10 10 0-5.52-4.48-10-10-10 5.52 0 10-4.48 10-10z" fill="url(#gg-start)"/></svg></span></a>
+<a class="start-link start-link-secondary" href="https://github.com/YannCarbo/App-Autonome"><svg aria-hidden="true" focusable="false" fill="currentColor" height="15" viewBox="0 0 16 16" width="15"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>Dépôt GitHub</a>
 </div>
 </div>
 </section>
 <footer class="site-footer">
 <div class="content-shell footer-inner">
-<span class="footer-credit">Built by <a href="https://www.linkedin.com/in/marjory-canonne-7aab19153/" target="_blank" rel="noopener"><svg class="li-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>Marjory</a> and <a href="https://www.linkedin.com/in/yanncarbonne/" target="_blank" rel="noopener"><svg class="li-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>Yann</a>.</span>
+<span class="footer-credit">Construit par <a href="https://www.linkedin.com/in/marjory-canonne-7aab19153/" target="_blank" rel="noopener"><svg class="li-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>Marjory</a> et <a href="https://www.linkedin.com/in/yanncarbonne/" target="_blank" rel="noopener"><svg class="li-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>Yann</a>.</span>
 </div>
 </footer>
 
-<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
-<!-- No library. React, ReactDOM and the bundler runtime were removed:
-     they were loaded without ever mounting a single component. -->
+<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+<!-- Aucune librairie. React, ReactDOM et le runtime du bundler ont été retirés :
+     ils étaient chargés sans jamais monter le moindre composant. -->
 
 <!-- ===== SECTION: APP CODE ===== -->
-<!-- Language bootstrap only: a few lines of vanilla JS below (browser-language
-     auto-detect + remembered explicit choice). No library, no tracking, and
-     still zero network requests. The French page (fr/index.html) never
-     auto-redirects: no redirect loop is possible. -->
+<!-- Seul JavaScript de la page : quelques lignes qui mémorisent le choix de
+     langue quand on clique un drapeau. Aucune librairie, aucun traçage, toujours
+     zéro requête réseau. Cette page FR ne redirige JAMAIS automatiquement (seule
+     la racine anglaise détecte la langue du navigateur) : aucune boucle possible. -->
 <script>
 "use strict";
 (function () {
-  var stored = null;
-  // localStorage can be unavailable (e.g. under file://): every access is
-  // guarded, and without it the page falls back to locale detection alone.
-  try { stored = localStorage.getItem("app-autonome-lang"); } catch (e) {}
-  var wantsFr = stored === "fr" || (!stored && /^fr(-|$)/i.test(navigator.language || ""));
-  if (wantsFr) { location.replace("fr/index.html" + location.hash); return; }
   var links = document.querySelectorAll("[data-lang-choice]");
   for (var i = 0; i < links.length; i++) {
     links[i].addEventListener("click", function () {
+      // localStorage peut être indisponible (ex. en file://) : accès protégé.
       try { localStorage.setItem("app-autonome-lang", this.getAttribute("data-lang-choice")); } catch (e) {}
     });
   }

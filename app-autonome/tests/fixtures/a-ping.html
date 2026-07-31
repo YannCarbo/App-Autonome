@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fixture — attribut ping</title>
-<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
-     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
-     ping= envoie un POST en arrière-plan au clic : une transmission de données,
-     contrairement au href de navigation (toléré).
-     Attendu : validateur ERREUR (ping). -->
+<title>Fixture: ping attribute</title>
+<!-- NEGATIVE test file of the skill: deliberate violation to check the
+     validator. NEVER use it as inspiration to build a tool.
+     ping= sends a background POST on click: a data transmission, unlike the
+     navigation href (tolerated).
+     Expected: validator ERROR (ping). -->
 
 <!-- ===== SECTION: STYLES ===== -->
 <style>body { font-family: system-ui, sans-serif; }</style>
@@ -15,13 +15,13 @@
 <!-- ===== SECTION: MARKUP ===== -->
 </head>
 <body>
-<header><h1>Fixture ping</h1> <span class="version">V1.0 du 20/07/2026</span></header>
+<header><h1>Ping fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
 <main>
-  <p><a href="#" ping="https://track.invalid/p">Un lien avec balise de suivi</a></p>
+  <p><a href="#" ping="https://track.invalid/p">A link with a tracking attribute</a></p>
 </main>
-<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+<footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
 
-<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
 
 <!-- ===== SECTION: APP CODE ===== -->
 <script>

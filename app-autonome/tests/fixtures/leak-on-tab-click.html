@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture: runtime leak on click</title>
+<!-- NEGATIVE test file of the skill: it DELIBERATELY contains a network leak.
+     NEVER use it as inspiration to build a tool.
+     The leak does NOT fire on load: only on clicking the "Tool rules" tab.
+     It checks that the smoke test's observation window covers the generic
+     interaction (clicking every tab), not just the page load.
+     Expected: validator 0 errors, smoke test FAILED (1 outgoing request). -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+  .tab { background: none; border: none; padding: 8px 14px; cursor: pointer; }
+  .tab.active { color: #1a5fb4; font-weight: 600; }
+  .panel[hidden] { display: none; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Leak-on-click fixture</h1>
+  <span class="version">V1.0 · 2026-07-20</span>
+</header>
+<main>
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab active" data-tab="processing" role="tab" aria-selected="true">Processing</button>
+    <button type="button" class="tab" data-tab="rules" role="tab" aria-selected="false">Tool rules</button>
+  </nav>
+  <section class="panel" data-panel="processing" role="tabpanel">
+    <p>Nothing leaves on load: the leak waits for a tab click.</p>
+  </section>
+  <section class="panel" data-panel="rules" role="tabpanel" hidden>
+    <p>Opening this tab triggers the request attempt.</p>
+  </section>
+</main>
+<footer>
+  This tool runs entirely in your browser: no data is sent over the internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+
+function activateTab(name) {
+  document.querySelectorAll(".tab").forEach(button => {
+    const isActive = button.dataset.tab === name;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+  });
+  document.querySelectorAll(".panel").forEach(panel => {
+    panel.hidden = panel.dataset.panel !== name;
+  });
+  if (name === "rules") {
+    // Deliberate leak triggered by the interaction, invisible on load.
+    var pixel = new Image();
+    pixel.src = "https://leak-test.invalid/click.gif";
+  }
+}
+document.querySelectorAll(".tab").forEach(button =>
+  button.addEventListener("click", () => activateTab(button.dataset.tab)));
+</script>
+</body>
+</html>

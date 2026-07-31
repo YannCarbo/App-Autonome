@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fixture — link stylesheet relative</title>
-<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
-     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
-     Une feuille de style RELATIVE n'est pas une URL internet, mais un fichier
-     séparé : il casse la promesse du fichier unique (l'ancien validateur ne
-     signalait que les <link> http(s)).
-     Attendu : validateur ERREUR (link-stylesheet). -->
+<title>Fixture: relative link stylesheet</title>
+<!-- NEGATIVE test file of the skill: deliberate violation to check the
+     validator. NEVER use it as inspiration to build a tool.
+     A RELATIVE stylesheet is not an internet URL, but a separate file: it
+     breaks the single-file promise (the old validator only reported
+     http(s) <link> tags).
+     Expected: validator ERROR (link-stylesheet). -->
 <link rel="stylesheet" href="style.css">
 
 <!-- ===== SECTION: STYLES ===== -->
@@ -17,11 +17,11 @@
 <!-- ===== SECTION: MARKUP ===== -->
 </head>
 <body>
-<header><h1>Fixture link relative</h1> <span class="version">V1.0 du 20/07/2026</span></header>
-<main><p>Le style principal est censé venir d'un fichier style.css séparé.</p></main>
-<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+<header><h1>Relative link fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
+<main><p>The main style is supposed to come from a separate style.css file.</p></main>
+<footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
 
-<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
 
 <!-- ===== SECTION: APP CODE ===== -->
 <script>

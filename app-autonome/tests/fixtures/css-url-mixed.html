@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture: external and relative CSS url()</title>
+<!-- NEGATIVE test file of the skill: deliberate violations to check the
+     validator. NEVER use it as inspiration to build a tool.
+     Two url() in the <style>: one external (CDN) and one relative (file next door).
+     Expected: validator 2 ERRORS: "external CSS url()/@import" and
+     "relative CSS url()". -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; }
+  .banner { background-image: url(https://cdn.invalid/bg.png); }
+  .pattern { background-image: url(images/background.png); }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Mixed CSS fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
+<main class="banner"><p class="pattern">Two backgrounds loaded from outside the file.</p></main>
+<footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+</script>
+</body>
+</html>

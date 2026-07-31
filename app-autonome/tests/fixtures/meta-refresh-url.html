@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fixture — meta refresh vers URL</title>
-<!-- Fichier de TEST NÉGATIF du skill : violation volontaire pour vérifier le
-     validateur. Ne JAMAIS s'en inspirer pour construire un outil.
-     Un refresh SANS url= recharge le même fichier (inoffensif) ; avec url=,
-     c'est une redirection automatique vers l'extérieur.
-     Attendu : validateur ERREUR (meta-refresh). -->
+<title>Fixture: meta refresh to a URL</title>
+<!-- NEGATIVE test file of the skill: deliberate violation to check the
+     validator. NEVER use it as inspiration to build a tool.
+     A refresh WITHOUT url= reloads the same file (harmless); with url=,
+     it is an automatic redirect to the outside.
+     Expected: validator ERROR (meta-refresh). -->
 <meta http-equiv="refresh" content="0;url=https://site.invalid/">
 
 <!-- ===== SECTION: STYLES ===== -->
@@ -16,11 +16,11 @@
 <!-- ===== SECTION: MARKUP ===== -->
 </head>
 <body>
-<header><h1>Fixture meta refresh</h1> <span class="version">V1.0 du 20/07/2026</span></header>
-<main><p>Cette page se redirige toute seule vers un site externe.</p></main>
-<footer>Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.</footer>
+<header><h1>Meta refresh fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
+<main><p>This page redirects itself to an external site.</p></main>
+<footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
 
-<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
 
 <!-- ===== SECTION: APP CODE ===== -->
 <script>

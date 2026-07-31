@@ -1,23 +1,23 @@
 name: release
 
-# Sur push vers main touchant les sources du skill : reconstruit le .skill,
-# incrémente le patch de la dernière Release et publie la nouvelle version avec
-# sa copie .zip (import « dossier » Mistral/Gemini). C'est le seul canal de
-# distribution — ces artefacts ne sont jamais commités, et les boutons de
-# téléchargement de docs/index.html pointent sur /releases/latest/download/.
+# On push to main touching the skill's sources: rebuilds the .skill, bumps the
+# patch of the latest Release and publishes the new version along with its .zip
+# copy ("folder" import for Mistral/Gemini). This is the only distribution
+# channel: these artifacts are never committed, and the download buttons of
+# docs/index.html point to /releases/latest/download/.
 
 on:
   push:
     branches: [main]
     paths:
       - 'app-autonome/**'
-  # Déclenchement manuel (onglet Actions) : re-publier sans commit sur les sources.
+  # Manual trigger (Actions tab): re-publish without committing to the sources.
   workflow_dispatch:
 
 permissions:
   contents: write
 
-# Deux merges rapprochés ne doivent pas calculer la même version en parallèle.
+# Two close merges must not compute the same version in parallel.
 concurrency:
   group: release
   cancel-in-progress: false
@@ -30,50 +30,51 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Construire le .skill
+      - name: Build the .skill
         env:
-          # Surtout ne pas nommer une variable « ZIP » : Info-ZIP lit les variables
-          # d'environnement ZIP et ZIPOPT comme options par défaut, et l'archive
-          # serait alors créée sous le mauvais nom, silencieusement.
+          # Never name a variable "ZIP": Info-ZIP reads the ZIP and ZIPOPT
+          # environment variables as default options, and the archive would
+          # then be created under the wrong name, silently.
           SRC: app-autonome
           OUT: app-autonome.skill
           ZIP_COPY: app-autonome.zip
         run: |
           set -euo pipefail
-          # Garde-fou : la description doit tenir en 500 caractères — limite la plus
-          # stricte des plateformes visées (Mistral ; Claude, ChatGPT et Gemini/AgentSkills
-          # tolèrent 1024). Mesurée hors guillemets (valeur YAML réelle). On bloque avant de packager.
+          # Guard: the description must fit in 500 characters, the strictest
+          # limit among the targeted platforms (Mistral; Claude, ChatGPT and
+          # Gemini/AgentSkills tolerate 1024). Measured without the surrounding
+          # quotes (real YAML value). We block before packaging.
           DESC_LEN=$(python3 -c 'import re,sys; t=open(sys.argv[1],encoding="utf-8").read(); m=re.search(r"^description:[ \t]*(.*)$", t, re.M); v=m.group(1).strip() if m else None; v=(v[1:-1] if (v is not None and len(v)>=2 and v[0]==v[-1]==chr(34)) else v); print(len(v) if v is not None else -1)' "$SRC/SKILL.md")
           if [ "$DESC_LEN" -lt 1 ] || [ "$DESC_LEN" -gt 500 ]; then
-            echo "Erreur : 'description' = $DESC_LEN caractères (attendu entre 1 et 500, limite Mistral)." >&2
+            echo "Error: 'description' is $DESC_LEN characters (expected 1 to 500, Mistral limit)." >&2
             exit 1
           fi
-          echo "OK : description = $DESC_LEN/500 caractères."
-          # zip -X ne retire que les champs extra (uid/gid) : les mtimes et l'ordre
-          # des entrées restent variables. On fige les deux pour que deux exécutions
-          # sur le même commit produisent un fichier identique.
+          echo "OK: description = $DESC_LEN/500 characters."
+          # zip -X only strips the extra fields (uid/gid): mtimes and entry order
+          # remain variable. We pin both so that two runs on the same commit
+          # produce an identical file.
           TS=$(date -u -d "@$(git log -1 --pretty=%ct)" +%Y%m%d%H%M.%S)
           find "$SRC" -exec touch -t "$TS" {} +
-          # -prune : ne jamais embarquer d'artefacts locaux (__pycache__, .pyc, .DS_Store) —
-          # le checkout CI est propre car ils sont gitignorés, mais si un step génère un
-          # __pycache__ avant le zip, la release reste propre.
+          # -prune: never ship local artifacts (__pycache__, .pyc, .DS_Store):
+          # the CI checkout is clean because they are gitignored, but if a step
+          # generates a __pycache__ before the zip, the release stays clean.
           find "$SRC" \( -name "__pycache__" -o -name "*.pyc" -o -name ".DS_Store" \) -prune -o -print \
             | LC_ALL=C sort | TZ=UTC zip -qX -@ "$OUT"
-          # Second artefact pour l'import « dossier » (Mistral/Gemini) : copie octet
-          # pour octet du .skill, donc tout aussi déterministe.
+          # Second artifact for the "folder" import (Mistral/Gemini): byte-for-byte
+          # copy of the .skill, hence just as deterministic.
           cp "$OUT" "$ZIP_COPY"
           unzip -l "$OUT"
           sha256sum "$OUT" "$ZIP_COPY"
 
-      - name: Calculer la version
+      - name: Compute the version
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          # Patch incrémenté depuis la dernière Release (v1.0.0 s'il n'y en a aucune).
-          # Sans release, l'API répond 404 et gh imprime le corps JSON de l'erreur sur
-          # stdout : un « || echo "" » dans la substitution ne vide donc rien, il faut
-          # réassigner LAST hors de la capture pour retomber sur le fallback.
+          # Patch bumped from the latest Release (v1.0.0 if there is none).
+          # With no release, the API answers 404 and gh prints the JSON error
+          # body on stdout: a "|| echo \"\"" inside the substitution clears
+          # nothing, so LAST must be reassigned outside the capture to fall back.
           LAST=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name 2>/dev/null) || LAST=""
           if [ -z "$LAST" ]; then
             TAG="v1.0.0"
@@ -81,14 +82,14 @@ jobs:
             TAG=$(echo "$LAST" | awk -F. '{ $NF = $NF + 1; print }' OFS=.)
           fi
           echo "TAG=$TAG" >> "$GITHUB_ENV"
-          echo "Version : ${LAST:-aucune} -> $TAG"
+          echo "Version: ${LAST:-none} -> $TAG"
 
-      - name: Créer la release
+      - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          # gh crée aussi le tag $TAG sur le commit poussé — aucun tag à pousser à la main.
+          # gh also creates the $TAG tag on the pushed commit, so there is no tag to push by hand.
           gh release create "$TAG" \
             app-autonome.skill app-autonome.zip \
             --repo "$GITHUB_REPOSITORY" \

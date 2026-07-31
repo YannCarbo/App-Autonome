@@ -1,31 +1,33 @@
 # App Autonome
 
-[![Licence : MIT](https://img.shields.io/badge/licence-MIT-green.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**Utilisez l'IA pour créer votre outil. Pas pour le faire tourner.**
+**Use AI to build your tool. Not to run it.**
 
-Transformez vos procédures en applications locales grâce à l'IA, puis utilisez-les sans elle. Des outils explicables et reproductibles, faciles à partager, qui gardent vos données sur votre poste.
+Use AI to turn your working routines into local applications, then run them without it. Explainable, predictable tools you can share like a plain file, and your data never leaves your computer.
 
-- **100 % local** — les données ne quittent jamais l'ordinateur.
-- **Pensé pour les équipes** — partagez un simple fichier HTML à vos collègues.
-- **Sans dépendance IA** — aucun crédit, aucun abonnement, aucun modèle à appeler.
-- **Règles explicites** — comportement reproductible, facile à faire évoluer.
-- **Créé en quelques minutes** — décrivez vos règles, obtenez un outil immédiatement.
+- **100% local**: your data never leaves your computer.
+- **Built for teams**: share a single HTML file with colleagues, like any other document.
+- **No AI dependency**: no credits, no subscriptions, no model to call at runtime.
+- **Explicit rules**: written-down, predictable behavior that's easy to evolve.
+- **Created in minutes**: describe your rules and get a working tool right away.
 
-## Installer sur votre IA
+Website: [English](https://yanncarbo.github.io/App-Autonome/) · [Français](https://yanncarbo.github.io/App-Autonome/fr/index.html)
 
-Le skill suit le format ouvert **Agent Skills** (un dossier `SKILL.md` + ressources), commun à Claude, ChatGPT/Codex, Mistral et Gemini : **une seule source** s'installe partout. La Release fournit **deux fichiers identiques** — le `.skill` (à importer tel quel) et sa copie `.zip` (à décompresser pour les IA qui importent un « dossier ») :
+## Install on your AI
 
-| IA | À fournir | Où l'ajouter |
+The skill follows the open **Agent Skills** format (a `SKILL.md` folder + resources), common to Claude, ChatGPT/Codex, Mistral and Gemini: **one single source** installs everywhere. The Release provides **two identical files**, the `.skill` (import as-is) and its `.zip` copy (unzip it for AIs that import a "folder"):
+
+| AI | What to provide | Where to add it |
 |---|---|---|
-| **Claude** | le fichier `.skill` | [Réglages → Skills](https://claude.ai/new#settings/customize-skills) |
-| **ChatGPT** | le fichier `.skill` | [chatgpt.com/skills](https://chatgpt.com/skills) |
-| **Mistral** | le `.zip` décompressé (dossier) | [chat.mistral.ai/skills](https://chat.mistral.ai/skills?dialog=create) |
-| **Gemini Entreprise** | le `.zip` / dossier | [docs.cloud.google.com — Skills](https://docs.cloud.google.com/gemini/enterprise/docs/skills?hl=fr) |
+| **Claude** | the `.skill` file | [Settings → Skills](https://claude.ai/new#settings/customize-skills) |
+| **ChatGPT** | the `.skill` file | [chatgpt.com/skills](https://chatgpt.com/skills) |
+| **Mistral** | the unzipped `.zip` (folder) | [chat.mistral.ai/skills](https://chat.mistral.ai/skills?dialog=create) |
+| **Gemini Enterprise** | the `.zip` / folder | [docs.cloud.google.com - Skills](https://docs.cloud.google.com/gemini/enterprise/docs/skills) |
 
-Les deux fichiers se téléchargent depuis la [dernière Release](https://github.com/YannCarbo/App-Autonome/releases/latest).
+Both files can be downloaded from the [latest Release](https://github.com/YannCarbo/App-Autonome/releases/latest).
 
 
-## Licence
+## License
 
-Publié sous licence [MIT](LICENSE) : réutilisation, modification et redistribution libres, attribution conservée.
+Released under the [MIT](LICENSE) license: free reuse, modification and redistribution, attribution preserved.
