@@ -1,6 +1,6 @@
 ---
 name: app-autonome
-description: "Transforme une idée, un besoin ou un prototype en outil web autonome : un fichier HTML unique qui s'ouvre par double-clic, hors ligne, sans serveur ni installation, partageable comme un simple fichier. Utiliser dès que l'utilisateur veut créer un petit outil métier — convertir ou vérifier des fichiers, tableau de bord depuis un Excel/CSV, compresser un PDF… — même sans dire « HTML autonome ». Utiliser aussi pour faire évoluer un tel outil ou fusionner un projet multi-fichiers en un seul."
+description: "Transforme une idée, un besoin ou un prototype en outil web autonome."
 ---
 
 # Outil HTML autonome
