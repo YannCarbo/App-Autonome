@@ -1,139 +1,139 @@
 ---
 name: app-autonome
-description: "Transforme une idée, un besoin ou un prototype en outil web autonome."
+description: "Turns an idea, a need, or a prototype into a self-contained web tool."
 ---
 
-# Outil HTML autonome
+# Self-contained HTML tool
 
-Ce skill produit un **unique fichier `.html`** : le destinataire double-clique dessus, son navigateur l'ouvre, l'outil fonctionne — hors ligne, sans installation, sans serveur, sans droits administrateur. Cible : Edge, Chrome et Firefox récents, utilisateurs non techniques. Le fichier est conçu pour être maintenu par IA : l'utilisateur le ré-uploade, demande une évolution, récupère une nouvelle version (voir « Mode maintenance »).
+This skill produces a **single `.html` file**: the recipient double-clicks it, their browser opens it, and the tool works offline, with no installation, no server and no admin rights. Target: recent Edge, Chrome and Firefox, non-technical users. The file is designed to be maintained by AI: the user re-uploads it, asks for an evolution, gets a new version back (see "Maintenance mode").
 
-## La promesse
+## The promise
 
-**L'IA sert à créer l'outil, pas à le faire tourner.** Le livrable est autonome :
+**AI is for building the tool, not for running it.** The deliverable is self-contained:
 
-- **Sans dépendance IA** : aucun crédit, aucun abonnement, aucun modèle à appeler pour l'utiliser.
-- **Règles explicites** : un comportement reproductible, décrit en langage courant dans l'outil lui-même.
-- **Pensé pour les équipes** : un simple fichier qui se partage par mail ou espace d'équipe.
-- **100 % local** : les données ne quittent jamais l'ordinateur — aucune requête réseau, sans exception, jamais d'entre-deux « essaie le réseau puis se rabat en local ». Un seul outil qui fuit détruit la confiance dans tous les autres ; le validateur et le smoke test le bloquent.
+- **No AI dependency**: no credits, no subscription, no model to call in order to use it.
+- **Explicit rules**: repeatable behavior, described in plain language inside the tool itself.
+- **Built for teams**: a single file shared by email or team space.
+- **100% local**: data never leaves the computer. No network request, no exception, never a "try the network then fall back to local" middle ground. One leaking tool destroys trust in all the others; the validator and the smoke test block it.
 
 ## Posture
 
-Le demandeur et les destinataires sont des métiers, pas des développeurs :
+The requester and the recipients are business people, not developers:
 
-- **Un minimum de questions, en langage métier.** Ne demander que ce dont une mauvaise hypothèse rendrait l'outil inutilisable ou dangereux — et jamais un choix technique : c'est ton métier, pas le sien. Un fichier d'exemple vaut mieux que dix questions ; le proposer, sans en faire un préalable. **La seule question toujours obligatoire est le nom de l'outil, choisi par l'utilisateur** : il s'affiche en haut de la page et sert de nom au fichier `.html`.
-- **Livrer d'abord.** Combler les trous par des hypothèses plausibles, livrer une v1 testable, lister les hypothèses dans la réponse et dans l'onglet « Règles de l'outil ». Le métier corrige plus facilement en testant qu'en répondant à un interrogatoire.
-- **Jamais de correction silencieuse.** C'est ce qui rend « livrer d'abord » tenable : tout cas ambigu non tranché est signalé comme anomalie, jamais deviné. Un outil qui rate un cas mais l'affiche est acceptable ; un outil qui corrige en silence ne l'est pas.
-- **Zéro jargon.** Pas de « UMD », « CORS », « parser » dans les réponses : dire « double-cliquez dessus », « fonctionne sans connexion internet ».
+- **A minimum of questions, in business language.** Only ask what a wrong assumption would make the tool unusable or dangerous, and never a technical choice: that is your job, not theirs. A sample file beats ten questions; offer it, without making it a prerequisite. **The only always-mandatory question is the tool's name, chosen by the user**: it shows at the top of the page and names the `.html` file.
+- **Deliver first.** Fill the gaps with plausible assumptions, deliver a testable v1, list the assumptions in the reply and in the "Tool rules" tab. Business users correct more easily by testing than by answering an interrogation.
+- **Never a silent correction.** That is what makes "deliver first" sustainable: any undecided ambiguous case is reported as an anomaly, never guessed. A tool that misses a case but shows it is acceptable; a tool that corrects silently is not.
+- **Zero jargon.** No "UMD", "CORS", "parser" in replies: say "double-click it", "works without an internet connection".
 
-## Étape 1 — Comprendre le besoin
+## Step 1: Understand the need
 
-Identifier : **entrées** (fichiers, colonnes avec leurs noms exacts, formats réels), **règles métier** (préférer un exemple chiffré à une description abstraite), **sorties** (format, nommage), **cas limites** (donnée obligatoire manquante : bloquer, avertir, valeur par défaut ?), **volumétrie** (au-delà de ~50 000 lignes : traitement par lots + barre de progression).
+Identify: **inputs** (files, columns with their exact names, real formats), **business rules** (prefer a numbered example over an abstract description), **outputs** (format, naming), **edge cases** (mandatory data missing: block, warn, default value?), **volume** (beyond ~50,000 rows: batch processing + progress bar).
 
-**Si un fichier d'exemple est fourni, l'inspecter réellement avant d'écrire une ligne de code** — les colonnes réelles réservent des surprises par rapport à la description verbale.
+**If a sample file is provided, actually inspect it before writing a single line of code**: real columns hold surprises compared to the verbal description.
 
-## Étape 2 — Garde-fous données (obligatoires pour toute transformation)
+## Step 2: Data guardrails (mandatory for any transformation)
 
-Le pire scénario n'est pas un plantage, c'est une corruption silencieuse. Patterns prêts à adapter dans `references/patterns-metier.md`.
+The worst-case scenario is not a crash, it is silent corruption. Ready-to-adapt patterns in `references/business-patterns.md`.
 
-1. **Aperçu avant/après** : un échantillon des données transformées (10–20 lignes) avant téléchargement.
-2. **Rapport chiffré** : « 212 lignes lues, 208 transformées, 4 anomalies », avec liste et numéros de ligne.
-3. **Zéro correction silencieuse** : cas ambigu = anomalie signalée ; ligne exclue avec mention ou conservée avec avertissement.
-4. **Jamais d'écrasement** : le fichier produit porte un nom distinct de l'original (`fournisseur_formate_2026-07-16.xlsx`).
-5. **Erreurs explicites** : « Ce fichier ne contient pas de colonne “Référence”. Colonnes trouvées : … », pas une erreur technique.
+1. **Before/after preview**: a sample of the transformed data (10–20 rows) before download.
+2. **Numbered report**: "212 rows read, 208 transformed, 4 anomalies", with a list and row numbers.
+3. **Zero silent correction**: ambiguous case = reported anomaly; row excluded with a mention or kept with a warning.
+4. **Never overwrite**: the produced file bears a name distinct from the original (`supplier_formatted_2026-07-16.xlsx`).
+5. **Explicit errors**: "This file has no \"Reference\" column. Columns found: …", not a technical error.
 
-## Étape 3 — Règles d'or du `file://` (non négociables)
+## Step 3: Golden rules of `file://` (non-negotiable)
 
-Ouvert par double-clic = protocole `file://`, origine opaque `null`. Une app qui marche sur un serveur de dev peut être totalement morte en double-clic :
+Opened by double-click = `file://` protocol, opaque `null` origin. An app that works on a dev server can be completely dead on double-click:
 
-- **Scripts classiques uniquement.** Jamais `<script type="module">`, jamais `import`/`export` : bloqués par CORS.
-- **Aucune ressource externe.** Aucune URL `http(s)` dans un `src`, `href`, `action` ou `url()` CSS : tout est inliné. (Exception : les `xmlns` des SVG — identifiants, pas téléchargements.)
-- **Jamais `fetch()` ni `XMLHttpRequest`.** Fichiers utilisateur : `<input type="file">` + `FileReader`. Données embarquées : `<script type="application/json" id="data-inline">` lu par `JSON.parse(...)`.
-- **Pas de Web Workers ni Service Workers** : `new Worker("fichier.js")` échoue depuis une origine `null`. Traitements longs découpés en lots via `setTimeout`/`requestAnimationFrame`. Exception étroite : worker inliné en Blob quand une lib l'exige vraiment (typiquement pdf.js) — à confirmer au smoke test sur Chrome, Edge et Firefox.
-- **Pas de File System Access API** (non supportée par Firefox). Sortie = `Blob` + lien `<a download>` cliqué programmatiquement.
-- **`localStorage` = bonus, jamais critique** (comportement variable en `file://`) : l'outil fonctionne intégralement sans.
-- **`<meta charset="utf-8">`** en tête de `<head>` ; images en SVG inline ou data URI ; polices système uniquement.
+- **Classic scripts only.** Never `<script type="module">`, never `import`/`export`: blocked by CORS.
+- **No external resource.** No `http(s)` URL in a `src`, `href`, `action` or CSS `url()`: everything is inlined. (Exception: SVG `xmlns`, identifiers rather than downloads.)
+- **Never `fetch()` nor `XMLHttpRequest`.** User files: `<input type="file">` + `FileReader`. Embedded data: `<script type="application/json" id="data-inline">` read with `JSON.parse(...)`.
+- **No Web Workers nor Service Workers**: `new Worker("file.js")` fails from a `null` origin. Long runs split into batches via `setTimeout`/`requestAnimationFrame`. Narrow exception: a worker inlined as a Blob when a lib truly requires it (typically pdf.js), to be confirmed at the smoke test on Chrome, Edge and Firefox.
+- **No File System Access API** (not supported by Firefox). Output = `Blob` + programmatically clicked `<a download>` link.
+- **`localStorage` = a bonus, never critical** (variable behavior under `file://`): the tool works fully without it.
+- **`<meta charset="utf-8">`** at the top of `<head>`; images as inline SVG or data URI; system fonts only.
 
-## Et si le besoin exige internet ?
+## What if the need requires the internet?
 
-Requalifier en langage métier, jamais opposer un refus sec — la plupart des « besoins d'internet » ont une réponse hors ligne acceptable :
+Reframe it in business language, never oppose a flat refusal; most "internet needs" have an acceptable offline answer:
 
-- **« Les données de référence changent »** → les embarquer (`<script type="application/json">`) ; le cycle de maintenance produit une nouvelle version quand elles changent vraiment.
-- **« Il faut interroger notre système »** (ERP, CRM) → l'utilisateur exporte lui-même (Excel, CSV) et charge l'export dans l'outil.
-- **« Il faut envoyer le résultat »** → l'outil produit un fichier, l'utilisateur l'envoie par son canal habituel. Tolérés car rien ne se charge à l'ouverture : un `mailto:` préparé, un lien `<a href>` de navigation suivi au clic.
-- **Vrai temps réel** (stock partagé, écriture directe dans un système) → le dire honnêtement : c'est une application web hébergée, un autre livrable hors périmètre — jamais une variante « dégradée » d'un outil autonome.
+- **"The reference data changes"** → embed it (`<script type="application/json">`); the maintenance cycle produces a new version when it really changes.
+- **"We need to query our system"** (ERP, CRM) → the user exports it themselves (Excel, CSV) and loads the export into the tool.
+- **"The result must be sent"** → the tool produces a file, the user sends it through their usual channel. Tolerated because nothing loads on open: a prepared `mailto:`, a navigation `<a href>` link followed on click.
+- **True real time** (shared stock, direct writes into a system) → say it honestly: that is a hosted web application, a different deliverable out of scope, never a "degraded" variant of a self-contained tool.
 
-## Étape 4 — Librairies
+## Step 4: Libraries
 
-Lire `references/libraries.md` (librairies vérifiées avec build navigateur, URLs, procédure). Trois échelons : **vanilla JS** (outil simple) → **Alpine.js** (quelques états d'interface) → **Vue 3 en build global** (vraie application à état). Jamais React ≥ 19 ni Tailwind pour un outil neuf. N'embarquer que le nécessaire : chaque lib ajoute des centaines de Ko.
+Read `references/libraries.md` (verified libraries with browser builds, URLs, procedure). Three tiers: **vanilla JS** (simple tool) → **Alpine.js** (a few UI states) → **Vue 3 global build** (real stateful application). Never React ≥ 19 nor Tailwind for a new tool. Embed only what is needed: every lib adds hundreds of KB.
 
-Pièges d'inlining :
+Inlining traps:
 
-- **Échapper `</script`** dans toute lib avant insertion : remplacer par `<\/script`, sinon la balise se ferme prématurément.
-- **`defer`/`async` sont perdus** en inline : une lib à démarrage automatique (Alpine…) s'exécute avant l'APP CODE qui la suit. Envelopper la lib dans `window.addEventListener("DOMContentLoaded", () => { … })` pour restituer l'ordre d'origine.
-- **Les builds minifiés sont intangibles** : aucune modification au-delà de l'échappement ci-dessus. Un avertissement du validateur sur du contenu de LIBRARIES se justifie dans la réponse, ne se patche jamais.
-- **Versions fraîches puis figées** : télécharger la dernière stable, la consigner dans le commentaire du bloc (nom@version) ; le livrable n'ira plus jamais rien chercher en ligne.
+- **Escape `</script`** in any lib before insertion: replace with `<\/script`, otherwise the tag closes prematurely.
+- **`defer`/`async` are lost** when inlined: an auto-starting lib (Alpine…) runs before the APP CODE that follows it. Wrap the lib in `window.addEventListener("DOMContentLoaded", () => { … })` to restore the original order.
+- **Minified builds are untouchable**: no modification beyond the escaping above. A validator warning about LIBRARIES content is justified in the reply, never patched.
+- **Fresh then frozen versions**: download the latest stable, record it in the block's comment (name@version); the deliverable will never fetch anything online again.
 
-## Étape 5 — Structure du fichier
+## Step 5: File structure
 
-Partir de `assets/template.html`. Sections délimitées par des marqueurs sentinelles — c'est ce qui rend la maintenance par IA possible sans relire les libs minifiées :
+Start from `assets/template.html`. Sections delimited by sentinel markers, which is what makes AI maintenance possible without re-reading the minified libs:
 
 ```
 <!-- ===== SECTION: STYLES ===== -->
 <!-- ===== SECTION: MARKUP ===== -->
-<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
 <!-- ===== SECTION: APP CODE ===== -->
 ```
 
-Trois éléments obligatoires dans l'interface :
+Three mandatory elements in the interface:
 
-- **En-tête** : `Nom de l'outil — VX.X du JJ/MM/AAAA`, en dur dans le HTML.
-- **Deux onglets** : « Traitement » (actif par défaut) et « Règles de l'outil » (transformations et hypothèses, en langage courant — la documentation vit dans l'outil, pas dans la conversation). Le gabarit fournit le mécanisme d'onglets : le réutiliser.
-- **Pied de page** : `Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.`
+- **Header**: `Tool name · VX.X · date`, hard-coded in the HTML.
+- **Two tabs**: "Processing" (active by default) and "Tool rules" (transformations and assumptions, in plain language: the documentation lives in the tool, not in the conversation). The template provides the tab mechanism: reuse it.
+- **Footer**: `This tool runs entirely in your browser: no data is sent over the internet.`
 
-Le reste est libre : design sobre avec une identité (couleur d'accent liée au domaine), boutons nommés par leur effet (« Télécharger le fichier corrigé », pas « Valider »), interface dans la langue de l'utilisateur.
+The rest is free: sober design with an identity (accent color tied to the domain), buttons named after their effect ("Download the corrected file", not "Submit"). **The interface is written in the requester's language, non-negotiable**: a French team gets a fully French tool (tab labels, buttons, messages, date formats, and the footer, e.g. « Cet outil fonctionne entièrement dans votre navigateur : aucune donnée n'est envoyée sur internet. »). This skill being written in English must never make a delivered tool default to English. The validator recognizes the privacy footer in English and French; for any other language, justify its warning in one sentence.
 
-## Étape 6 — Validation
+## Step 6: Validation
 
 ```bash
-python3 scripts/validate_package.py chemin/vers/outil.html
+python3 scripts/validate_package.py path/to/tool.html
 ```
 
-Corriger et relancer jusqu'à **zéro erreur**. Une **erreur** se corrige dans STYLES/MARKUP/APP CODE ou dans l'assemblage — jamais en éditant une lib minifiée. Un **avertissement** se traite au jugement et se justifie en une phrase.
+Fix and rerun until **zero errors**. An **error** is fixed in STYLES/MARKUP/APP CODE or in the assembly, never by editing a minified lib. A **warning** is handled with judgment and justified in one sentence.
 
-Le zéro erreur du validateur (statique) ne prouve pas que la page s'exécute. Trois couches complémentaires, de la moins chère à la plus probante :
+The validator's zero errors (static) does not prove the page runs. Three complementary layers, from cheapest to most conclusive:
 
-1. **Fonctions pures sous node** : isoler la logique métier (voir `references/patterns-metier.md`) et la tester avec des cas chiffrés avant de l'inliner.
-2. **Smoke test navigateur**, quand un navigateur est disponible :
+1. **Pure functions under node**: isolate the business logic (see `references/business-patterns.md`) and test it with numbered cases before inlining it.
+2. **Browser smoke test**, when a browser is available:
    ```bash
-   node scripts/smoke_test.cjs chemin/vers/outil.html
+   node scripts/smoke_test.cjs path/to/tool.html
    ```
-   Ouvre réellement le fichier en `file://` hors ligne, clique chaque onglet, échoue sur toute erreur JS et toute requête sortante — c'est le test déterministe du « 100 % local ». « SAUTÉ » n'est pas un feu vert : la vérification retombe sur la première ouverture chez l'utilisateur (Étape 7).
-3. **Validation métier sur données réelles** (ou échantillon anonymisé représentatif) : faire vérifier au métier quelques résultats attendus et les principaux cas limites. Pour une transformation critique (compta, ERP, douane), ce préalable est non négociable.
+   Actually opens the file under `file://` offline, clicks every tab, fails on any JS error and any outgoing request: the deterministic test of "100% local". "SKIPPED" is not a green light: verification falls back to the first open at the user's (Step 7).
+3. **Business validation on real data** (or a representative anonymized sample): have the business check a few expected results and the main edge cases. For a critical transformation (accounting, ERP, customs), this prerequisite is non-negotiable.
 
-Self-check des garde-fous eux-mêmes — en cas de doute sur l'environnement ou après modification des scripts du skill : `python3 tests/run_tests.py` (code 1 = un garde-fou a régressé, ne pas valider d'outil).
+Self-check of the guardrails themselves, when in doubt about the environment or after modifying the skill's scripts: `python3 tests/run_tests.py` (exit 1 = a guardrail regressed, do not validate any tool).
 
-## Étape 7 — Livraison
+## Step 7: Delivery
 
-- Nom de fichier : `nom-outil-v1.0.html` (kebab-case, version incluse — le nom survit aux transferts, pas les métadonnées).
-- Livrer via l'outil de présentation de fichiers, **avec un fichier d'exemple** si l'outil transforme des fichiers : le métier teste immédiatement, sans risquer de vraies données.
-- Mode d'emploi numéroté obligatoire, en langage courant, couvrant quatre moments : **1. Récupérer** (télécharger, enregistrer) · **2. Ouvrir** (double-clic, s'ouvre dans le navigateur, tout se passe sur l'ordinateur) · **3. Tester** (scénario concret avec le fichier d'exemple, dire quoi vérifier) · **4. Partager** (comme un simple fichier, depuis l'espace d'équipe ; par mail, zipper le `.html` s'il est bloqué en pièce jointe).
-- Ajouter les deux phrases qui évitent 90 % des tickets : « Si le fichier s'ouvre dans le Bloc-notes : clic droit > Ouvrir avec > Edge. » et « Pour toute évolution : renvoyez-moi ce fichier dans une nouvelle conversation en décrivant le changement voulu. »
+- File name: `tool-name-v1.0.html` (kebab-case, version included: the name survives transfers, metadata does not).
+- Deliver through the file-presentation tool, **with a sample file** when the tool transforms files: the business tests immediately, without risking real data.
+- Mandatory numbered how-to, in plain language, covering four moments: **1. Get it** (download, save) · **2. Open it** (double-click, opens in the browser, everything happens on the computer) · **3. Test it** (concrete scenario with the sample file, say what to check) · **4. Share it** (like a plain file, from the team space; by email, zip the `.html` if it is blocked as an attachment).
+- Add the two sentences that prevent 90% of the tickets: "If the file opens in Notepad: right-click > Open with > Edge." and "For any evolution: send this file back to me in a new conversation describing the wanted change."
 
-## Mode conversion (multi-fichiers → fichier unique)
+## Conversion mode (multi-file → single file)
 
-L'inlining mécanique ne suffit pas : inventorier d'abord ce que la structure d'origine garantissait implicitement.
+Mechanical inlining is not enough: first inventory what the original structure guaranteed implicitly.
 
-1. **`defer`/`async`/`type` et l'ordre d'exécution réel** qui en découle : reproduire cet ordre-là (positionnement + enveloppe `DOMContentLoaded`), pas l'ordre d'apparition.
-2. **Les libs qui scannent le DOM à leur exécution** (Alpine via `x-data`, Tailwind Play…) doivent s'exécuter après que ce DOM existe.
-3. **Les ressources réseau à couper** : polices → pile système, images distantes → data URI, `fetch` de données → `<script type="application/json">`.
+1. **`defer`/`async`/`type` and the real execution order** they imply: reproduce that order (positioning + `DOMContentLoaded` wrapper), not the order of appearance.
+2. **Libs that scan the DOM when they run** (Alpine via `x-data`, Tailwind Play…) must run after that DOM exists.
+3. **Network resources to cut**: fonts → system stack, remote images → data URI, data `fetch` → `<script type="application/json">`.
 
-Puis dérouler les Étapes 5 à 7. Les libs héritées de l'existant (Tailwind Play, React 18 UMD…) peuvent rester telles quelles : « jamais pour un outil neuf » ne s'applique pas à une conversion.
+Then run Steps 5 to 7. Libs inherited from the existing artifact (Tailwind Play, React 18 UMD…) can stay as they are: "never for a new tool" does not apply to a conversion.
 
-## Mode maintenance (outil existant uploadé)
+## Maintenance mode (existing tool uploaded)
 
-1. **Ne jamais lire le fichier en entier** (LIBRARIES pèse des Mo de minifié) : `grep -n "===== SECTION" outil.html`, puis lire uniquement STYLES, MARKUP et APP CODE par plages de lignes.
-2. Modifier **sans toucher LIBRARIES** — sauf mise à jour de lib explicitement demandée : re-télécharger, ré-échapper, remplacer le bloc entier, mettre à jour le commentaire nom@version.
-3. Incrémenter version et date (en-tête + nom de fichier) ; mettre à jour l'onglet « Règles de l'outil » si les règles ont changé.
-4. Revalider (`scripts/validate_package.py`), livrer sous le nouveau nom versionné.
+1. **Never read the whole file** (LIBRARIES weighs MBs of minified code): `grep -n "===== SECTION" tool.html`, then read only STYLES, MARKUP and APP CODE by line ranges.
+2. Modify **without touching LIBRARIES**, except for an explicitly requested lib update: re-download, re-escape, replace the whole block, update the name@version comment.
+3. Bump version and date (header + file name); update the "Tool rules" tab if the rules changed.
+4. Revalidate (`scripts/validate_package.py`), deliver under the new versioned name.
 
-Si le fichier n'a pas les marqueurs sentinelles (créé hors skill), proposer de le restructurer au format du skill à l'occasion de la modification.
+If the file lacks the sentinel markers (created outside the skill), offer to restructure it to the skill's format on the occasion of the change.

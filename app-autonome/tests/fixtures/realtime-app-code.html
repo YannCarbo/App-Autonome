@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture: EventSource and WebRTC in APP CODE</title>
+<!-- NEGATIVE test file of the skill: deliberate violations to check the
+     validator. NEVER use it as inspiration to build a tool.
+     Expected: validator 2 ERRORS: "EventSource" and "RTCPeerConnection". -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>body { font-family: system-ui, sans-serif; }</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header><h1>Realtime fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
+<main><p>The application code opens an SSE stream and a WebRTC connection, both forbidden.</p></main>
+<footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+function openChannels() {
+  const sse = new EventSource("https://stream.invalid/sse");
+  const rtc = new RTCPeerConnection();
+  return [sse, rtc];
+}
+if (false) { openChannels(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts-test.invalid">
+<title>Fixture: external preconnect</title>
+<!-- NEGATIVE test file of the skill: it DELIBERATELY contains a violation.
+     NEVER use it as inspiration to build a tool.
+     A <link rel="preconnect"> emits NO interceptable request: it is a connection
+     opened ahead of time (DNS/TCP/TLS), not a load. The static validator catches
+     it as an external <link>; the smoke test must catch it by inspecting the
+     live DOM, its only defense for a file that lacks the template's structure
+     and therefore escapes the validator (real case: the Google Fonts preconnect
+     of the docs/index.html hero page, fixed in PR #6).
+     Expected: validator 1 error (external <link>), smoke test FAILED (preconnection).
+     Domain in .invalid (RFC 2606): can never resolve, even outside the harness. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>External preconnect fixture</h1>
+  <span class="version">V1.0 · 2026-07-27</span>
+</header>
+<main>
+  <p>This fixture declares a preconnection to the outside: no data leaves, but a connection would open as soon as the file is opened.</p>
+</main>
+<footer>
+  This tool runs entirely in your browser: no data is sent over the internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+document.querySelector("main p").textContent += " (guardrail test fixture)";
+</script>
+</body>
+</html>

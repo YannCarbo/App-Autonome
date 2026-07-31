@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fixture: sendBeacon in APP CODE</title>
+<title>Fixture: external script src</title>
 <!-- NEGATIVE test file of the skill: deliberate violation to check the
      validator. NEVER use it as inspiration to build a tool.
-     sendBeacon is designed precisely to SEND data in the background.
-     Expected: validator ERROR "navigator.sendBeacon() detected in APP CODE". -->
+     Expected: validator ERROR "resource(s) loaded at runtime" (script-src). -->
 
 <!-- ===== SECTION: STYLES ===== -->
 <style>body { font-family: system-ui, sans-serif; }</style>
@@ -14,19 +13,16 @@
 <!-- ===== SECTION: MARKUP ===== -->
 </head>
 <body>
-<header><h1>SendBeacon fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
-<main><p>The application code contains a sendBeacon, which is forbidden.</p></main>
+<header><h1>External script fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
+<main><p>The LIBRARIES section loads a script from a CDN instead of inlining it.</p></main>
 <footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
 
 <!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+<script src="https://cdn.invalid/lib.js"></script>
 
 <!-- ===== SECTION: APP CODE ===== -->
 <script>
 "use strict";
-function sendStats(data) {
-  navigator.sendBeacon("https://telemetry.invalid/b", data);
-}
-if (false) { sendStats("x"); }
 </script>
 </body>
 </html>

@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fixture: sendBeacon in APP CODE</title>
+<title>Fixture: remote srcset</title>
 <!-- NEGATIVE test file of the skill: deliberate violation to check the
      validator. NEVER use it as inspiration to build a tool.
-     sendBeacon is designed precisely to SEND data in the background.
-     Expected: validator ERROR "navigator.sendBeacon() detected in APP CODE". -->
+     The src is a data URI (harmless): it is the srcset that points to a CDN,
+     the attribute the old validator did not look at.
+     Expected: validator ERROR (srcset). -->
 
 <!-- ===== SECTION: STYLES ===== -->
 <style>body { font-family: system-ui, sans-serif; }</style>
@@ -14,8 +15,11 @@
 <!-- ===== SECTION: MARKUP ===== -->
 </head>
 <body>
-<header><h1>SendBeacon fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
-<main><p>The application code contains a sendBeacon, which is forbidden.</p></main>
+<header><h1>Srcset fixture</h1> <span class="version">V1.0 · 2026-07-20</span></header>
+<main>
+  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+       srcset="https://cdn.invalid/logo@2x.png 2x" alt="logo">
+</main>
 <footer>This tool runs entirely in your browser: no data is sent over the internet.</footer>
 
 <!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
@@ -23,10 +27,6 @@
 <!-- ===== SECTION: APP CODE ===== -->
 <script>
 "use strict";
-function sendStats(data) {
-  navigator.sendBeacon("https://telemetry.invalid/b", data);
-}
-if (false) { sendStats("x"); }
 </script>
 </body>
 </html>

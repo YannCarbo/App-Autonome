@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-Valide qu'un outil HTML autonome respecte les contraintes du protocole file://
-et la structure imposée par le skill app-autonome.
+Validates that a self-contained HTML tool honors the constraints of the file://
+protocol and the structure required by the app-autonome skill.
 
-Usage : python3 validate_package.py chemin/vers/outil.html
-Sortie : rapport ERREUR / AVERTISSEMENT / OK ; code retour 0 si zéro erreur, 1 sinon.
+Usage: python3 validate_package.py path/to/tool.html
+Output: ERROR / WARNING / OK report; exit code 0 if zero errors, 1 otherwise.
 
-Principe de séparation ERREUR / AVERTISSEMENT :
-- Une ressource RÉELLEMENT chargée par le navigateur au runtime (balise <script src>,
-  <link rel=stylesheet>, <img src> distante, <iframe>/<video>/<source> src, url()/@import
-  CSS externe) est une ERREUR, où qu'elle soit — y compris dans LIBRARIES : c'est ce qui
-  casse la promesse « 100% hors ligne ».
-- Une URL http(s) présente seulement comme CHAÎNE INERTE dans du code minifié (attribution
-  de licence, détection de fonctionnalité...) reste un AVERTISSEMENT : la patcher serait plus
-  dangereux que de la laisser.
-Le scanner ci-dessous fait cette distinction en respectant la sémantique HTML : le contenu
-d'un bloc <script>...</script> est du texte brut, donc un « <script src=... » qui y apparaît
-est une chaîne, pas une balise — il n'est jamais chargé.
+ERROR / WARNING separation principle:
+- A resource ACTUALLY loaded by the browser at runtime (<script src> tag,
+  <link rel=stylesheet>, remote <img src>, <iframe>/<video>/<source> src, external
+  CSS url()/@import) is an ERROR, wherever it lives, including in LIBRARIES: it is
+  what breaks the "100% offline" promise.
+- An http(s) URL present only as an INERT STRING inside minified code (license
+  attribution, feature detection...) stays a WARNING: patching it would be more
+  dangerous than leaving it alone.
+The scanner below makes that distinction by honoring HTML semantics: the content
+of a <script>...</script> block is plain text, so a "<script src=..." appearing
+inside it is a string, not a tag: it is never loaded.
 """
 
 import re
@@ -30,35 +30,35 @@ SENTINELS = {
     "APP CODE": r"=====\s*SECTION:\s*APP CODE",
 }
 
-# APIs interdites en file:// — erreur dans APP CODE, avertissement dans LIBRARIES
-# (les librairies contiennent souvent du code de détection de fonctionnalité inerte)
+# APIs forbidden under file://: error in APP CODE, warning in LIBRARIES
+# (libraries often contain inert feature-detection code)
 FORBIDDEN_APIS = [
     (r"\bfetch\s*\(", "fetch()"),
     (r"\bXMLHttpRequest\b", "XMLHttpRequest"),
     (r"navigator\.serviceWorker", "Service Worker"),
     (r"\bimportScripts\s*\(", "importScripts()"),
-    (r"\bimport\s*\(", "import() dynamique"),
-    (r"\bshowOpenFilePicker\b|\bshowSaveFilePicker\b", "File System Access API (non supportée par Firefox)"),
-    # Canaux d'ENVOI de données : rien ne doit sortir, pas seulement rien n'entrer.
-    # sendBeacon( sans le préfixe navigator. : le minifié aliase souvent l'objet.
+    (r"\bimport\s*\(", "dynamic import()"),
+    (r"\bshowOpenFilePicker\b|\bshowSaveFilePicker\b", "File System Access API (not supported by Firefox)"),
+    # Data EGRESS channels: nothing must leave, not just nothing come in.
+    # sendBeacon( without the navigator. prefix: minified code often aliases the object.
     (r"\bsendBeacon\s*\(", "navigator.sendBeacon()"),
-    # new exigé pour WebSocket/EventSource/RTCPeerConnection : le mot seul apparaît
-    # dans du texte ou des tests de fonctionnalité ("WebSocket" in window).
+    # new required for WebSocket/EventSource/RTCPeerConnection: the bare word shows up
+    # in prose or feature tests ("WebSocket" in window).
     (r"\bnew\s+WebSocket\s*\(", "WebSocket"),
     (r"\bnew\s+EventSource\s*\(", "EventSource (Server-Sent Events)"),
     (r"\bnew\s+(?:webkit)?RTCPeerConnection\s*\(", "RTCPeerConnection (WebRTC)"),
 ]
 
-# rel de <link> qui déclenchent un chargement : pour ceux-là, un href même RELATIF
-# est une ressource réelle (une feuille de style à côté du fichier casse le monofichier).
-LINK_RELS_CHARGEANTS = {
+# <link> rel values that trigger a load: for those, even a RELATIVE href is a real
+# resource (a stylesheet sitting next to the file breaks the single-file promise).
+LOADING_LINK_RELS = {
     "stylesheet", "icon", "shortcut", "apple-touch-icon",
     "preload", "prefetch", "modulepreload", "manifest",
 }
 
 
 def find_section_spans(html):
-    """Retourne {nom_section: (debut, fin)} d'après les marqueurs sentinelles."""
+    """Returns {section_name: (start, end)} based on the sentinel markers."""
     positions = []
     for name, pattern in SENTINELS.items():
         m = re.search(pattern, html)
@@ -72,9 +72,9 @@ def find_section_spans(html):
     return spans
 
 
-def _attr(tag, nom):
-    """Valeur d'un attribut dans une balise, quotée ou non, ordre libre. '' si absent."""
-    m = re.search(r"\b" + nom + r"\s*=\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s\"'>]+))", tag, re.I)
+def _attr(tag, name):
+    """Value of an attribute inside a tag, quoted or not, any order. '' if absent."""
+    m = re.search(r"\b" + name + r"\s*=\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s\"'>]+))", tag, re.I)
     if not m:
         return ""
     return next((g for g in m.groups() if g is not None), "").strip()
@@ -82,9 +82,9 @@ def _attr(tag, nom):
 
 def strip_script_bodies(html):
     """
-    Retourne le HTML sans les corps de <script>...</script> (balises conservées).
-    Le texte d'un bloc script n'est jamais parsé comme CSS/HTML : le retirer permet
-    de chercher les url()/@import CSS réels sans faux positifs venus des chaînes JS.
+    Returns the HTML without the bodies of <script>...</script> (tags kept).
+    The text of a script block is never parsed as CSS/HTML: removing it lets us
+    look for real CSS url()/@import without false positives from JS strings.
     """
     out = []
     n = len(html)
@@ -111,10 +111,10 @@ def strip_script_bodies(html):
 
 def scan_real_loads(html):
     """
-    Parcourt le HTML en respectant la règle du texte brut des blocs <script> :
-    tout ce qui se trouvé entre un <script ...> et le </script suivant est ignore
-    (c'est du contenu de librairie, jamais une balise a charger).
-    Retourne une liste de tuples (type, extrait) pour chaque ressource RÉELLEMENT chargée.
+    Walks the HTML while honoring the plain-text rule of <script> blocks:
+    everything between a <script ...> and the next </script is skipped
+    (it is library content, never a tag to load).
+    Returns a list of (type, excerpt) tuples for every resource ACTUALLY loaded.
     """
     loads = []
     n = len(html)
@@ -144,10 +144,10 @@ def scan_real_loads(html):
             href = _attr(tag, "href")
             if href:
                 hl = href.lower()
-                rels_chargeants = set(rel.split()) & LINK_RELS_CHARGEANTS
-                if rels_chargeants and not hl.startswith(("data:", "#")):
-                    # stylesheet/icon/preload... : relatif ou absolu, ça charge.
-                    loads.append(("link-" + sorted(rels_chargeants)[0], href))
+                loading_rels = set(rel.split()) & LOADING_LINK_RELS
+                if loading_rels and not hl.startswith(("data:", "#")):
+                    # stylesheet/icon/preload...: relative or absolute, it loads.
+                    loads.append(("link-" + sorted(loading_rels)[0], href))
                 elif hl.startswith(("http://", "https://", "//")):
                     loads.append(("link", href))
 
@@ -156,20 +156,20 @@ def scan_real_loads(html):
             m = re.search(r"\bsrc\s*=\s*[\"']([^\"']+)[\"']", tag, re.I)
             if m and not m.group(1).strip().lower().startswith(("data:", "#", "javascript:")):
                 loads.append((m_media.group(1).lower() + "-src", m.group(1)))
-            # srcset : candidats séparés par ", " (une data URI contient une virgule
-            # SANS espace derrière — ce split la préserve), URL = 1er token du candidat.
+            # srcset: candidates separated by ", " (a data URI contains a comma
+            # with NO space after it, so this split preserves it), URL = candidate's 1st token.
             srcset = _attr(tag, "srcset")
             if srcset:
-                candidats = [c.strip().split()[0] for c in re.split(r",\s+", srcset) if c.strip()]
-                if any(not c.lower().startswith(("data:", "#")) for c in candidats):
+                candidates = [c.strip().split()[0] for c in re.split(r",\s+", srcset) if c.strip()]
+                if any(not c.lower().startswith(("data:", "#")) for c in candidates):
                     loads.append(("srcset", srcset))
             poster = _attr(tag, "poster")
             if poster and not poster.lower().startswith("data:"):
                 loads.append(("poster", poster))
 
         if re.match(r"<(a|area)\b", tag, re.I):
-            # ping= envoie un POST en arrière-plan au clic : une transmission,
-            # contrairement au href de navigation (toléré, voir count_external_anchors).
+            # ping= sends a background POST on click: a transmission, unlike the
+            # navigation href (tolerated, see count_external_anchors).
             ping = _attr(tag, "ping")
             if ping:
                 loads.append(("ping", ping))
@@ -177,7 +177,7 @@ def scan_real_loads(html):
         if re.match(r"<meta\b", tag, re.I) and re.search(r"http-equiv\s*=\s*[\"']?refresh", tag, re.I):
             content = _attr(tag, "content")
             if re.search(r"url\s*=", content, re.I):
-                # un refresh SANS url= recharge le même fichier : inoffensif.
+                # a refresh WITHOUT url= reloads the same file: harmless.
                 loads.append(("meta-refresh", content))
 
         if re.match(r"<html\b", tag, re.I):
@@ -191,8 +191,8 @@ def scan_real_loads(html):
                 loads.append(("input-image-src", src))
 
         if re.match(r"<use\b", tag, re.I):
-            # <use href="#icone"> (sprite interne) est le cas légitime ; une cible
-            # externe est un chargement.
+            # <use href="#icon"> (internal sprite) is the legitimate case; an
+            # external target is a load.
             m = re.search(r"\b(?:xlink:)?href\s*=\s*[\"']([^\"']+)[\"']", tag, re.I)
             if m and not m.group(1).strip().lower().startswith(("#", "data:")):
                 loads.append(("use-href", m.group(1)))
@@ -212,7 +212,7 @@ def scan_real_loads(html):
 
 
 def count_external_anchors(html):
-    """Compte les liens <a href="http(s)://..."> — navigation au clic, pas un chargement."""
+    """Counts <a href="http(s)://..."> links: navigation on click, not a load."""
     return len(re.findall(r"<a\b[^>]*\bhref\s*=\s*[\"']?https?://", html, re.I))
 
 
@@ -223,7 +223,7 @@ def main():
 
     path = sys.argv[1]
     if not os.path.isfile(path):
-        print(f"ERREUR  Fichier introuvable : {path}")
+        print(f"ERROR  File not found: {path}")
         return 1
 
     errors, warnings, oks = [], [], []
@@ -231,180 +231,186 @@ def main():
     size = os.path.getsize(path)
     size_mb = size / (1024 * 1024)
     if size_mb > 15:
-        errors.append(f"Taille {size_mb:.1f} Mo — beaucoup trop lourd, réduire les librairies embarquees")
+        errors.append(f"Size {size_mb:.1f} MB: far too heavy, trim the embedded libraries")
     elif size_mb > 6:
-        warnings.append(f"Taille {size_mb:.1f} Mo — lourd pour un partage par mail, vérifier que chaque librairie est nécessaire")
+        warnings.append(f"Size {size_mb:.1f} MB: heavy for email sharing, check that every library is needed")
     else:
-        oks.append(f"Taille : {size_mb:.2f} Mo")
+        oks.append(f"Size: {size_mb:.2f} MB")
 
     if not path.lower().endswith(".html"):
-        errors.append("L'extension doit être .html")
+        errors.append("The extension must be .html")
 
     raw = open(path, "rb").read()
     try:
         html = raw.decode("utf-8")
-        oks.append("Encodage UTF-8 valide")
+        oks.append("Valid UTF-8 encoding")
     except UnicodeDecodeError:
-        errors.append("Le fichier n'est pas de l'UTF-8 valide")
+        errors.append("The file is not valid UTF-8")
         html = raw.decode("utf-8", errors="replace")
 
     if re.search(r"<meta[^>]+charset\s*=\s*[\"']?utf-8", html, re.I):
-        oks.append('<meta charset="utf-8"> présent')
+        oks.append('<meta charset="utf-8"> present')
     else:
-        errors.append('<meta charset="utf-8"> manquant (obligatoire en file://)')
+        errors.append('<meta charset="utf-8"> missing (mandatory under file://)')
 
     if re.search(r"type\s*=\s*[\"']module[\"']", html, re.I):
-        errors.append('<script type="module"> détecté — bloqué par CORS en file://')
+        errors.append('<script type="module"> detected: blocked by CORS under file://')
     else:
-        oks.append("Aucun module ES")
+        oks.append("No ES modules")
 
     spans = find_section_spans(html)
     if "LIBRARIES" in spans:
-        lib_deb, lib_fin = spans["LIBRARIES"]
-        libs_txt = html[lib_deb:lib_fin]
+        lib_start, lib_end = spans["LIBRARIES"]
+        libs_txt = html[lib_start:lib_end]
     else:
-        lib_deb = lib_fin = None
+        lib_start = lib_end = None
         libs_txt = ""
 
     loads = scan_real_loads(html)
     if loads:
-        aperçu = "; ".join(f"<{k}> {v[:60]}" for k, v in loads[:4])
+        preview = "; ".join(f"<{k}> {v[:60]}" for k, v in loads[:4])
         if len(loads) > 4:
-            aperçu += f" ... (+{len(loads) - 4})"
+            preview += f" ... (+{len(loads) - 4})"
         errors.append(
-            f"{len(loads)} ressource(s) chargée(s) au runtime — l'outil doit être 100% inline/hors ligne. "
-            f"Inliner (script/CSS) ou convertir en data URI (images) : {aperçu}"
+            f"{len(loads)} resource(s) loaded at runtime: the tool must be 100% inline/offline. "
+            f"Inline (script/CSS) or convert to a data URI (images): {preview}"
         )
     else:
-        oks.append("Aucune ressource chargée au runtime (tout est inline)")
+        oks.append("No resource loaded at runtime (everything is inline)")
 
-    hors_libs = (html[:lib_deb] + html[lib_fin:]) if libs_txt else html
+    outside_libs = (html[:lib_start] + html[lib_end:]) if libs_txt else html
 
     def count_css_ext(txt):
         n = len(re.findall(r"url\(\s*[\"']?https?://", txt, re.I))
         n += len(re.findall(r"@import\s+[\"']?https?://", txt, re.I))
         return n
 
-    # Le CSS réel (balises <style>, attributs style=) vit hors des corps de <script> :
-    # on scanne le HTML débarrassé de ces corps pour éviter les faux positifs des
-    # chaînes JS, et on y traque l'externe (http) ET le relatif (fichier à côté).
-    sans_scripts = strip_script_bodies(html)
+    # Real CSS (<style> tags, style= attributes) lives outside <script> bodies:
+    # we scan the HTML stripped of those bodies to avoid false positives from JS
+    # strings, and hunt both external (http) and relative (file next door) targets.
+    html_no_scripts = strip_script_bodies(html)
 
     def count_css_rel(txt):
         n = 0
         for m in re.finditer(r"url\(\s*([\"']?)([^\"')]+)\1\s*\)", txt, re.I):
-            cible = m.group(2).strip().lower()
-            if not cible.startswith(("data:", "#", "blob:", "http://", "https://", "//")):
+            target = m.group(2).strip().lower()
+            if not target.startswith(("data:", "#", "blob:", "http://", "https://", "//")):
                 n += 1
         n += len(re.findall(r"@import\s+[\"'](?!https?://|data:)[^\"']+[\"']", txt, re.I))
         return n
 
-    css_ext = count_css_ext(sans_scripts)
-    css_rel = count_css_rel(sans_scripts)
+    css_ext = count_css_ext(html_no_scripts)
+    css_rel = count_css_rel(html_no_scripts)
     css_ext_libs = count_css_ext(libs_txt)
     if css_ext:
-        errors.append(f"{css_ext} url()/@import CSS externe(s) — inliner ou convertir en data URI")
+        errors.append(f"{css_ext} external CSS url()/@import: inline or convert to a data URI")
     if css_rel:
-        errors.append(f"{css_rel} url() CSS relative(s) — un fichier séparé (image, feuille de style) casse le fichier unique. Inliner ou convertir en data URI")
+        errors.append(f"{css_rel} relative CSS url(): a separate file (image, stylesheet) breaks the single file. Inline or convert to a data URI")
     if css_ext_libs:
-        warnings.append(f"{css_ext_libs} occurrence(s) url()/@import http(s) dans LIBRARIES — probablement des chaînes inertes de lib minifiee. NE PAS patcher la lib : vérifier qu'aucun chemin d'exécution ne les charge")
+        warnings.append(f"{css_ext_libs} http(s) url()/@import occurrence(s) in LIBRARIES: probably inert strings of minified libs. Do NOT patch the lib: check that no execution path loads them")
 
     url_strings_libs = len(re.findall(r"[\"']https?://[^\"']+[\"']", libs_txt))
     if url_strings_libs:
-        warnings.append(f"{url_strings_libs} URL en chaîne dans LIBRARIES — normal pour du minifie (source maps, liens de licence). Vérifier au smoke test qu'aucune n'est fetchee a l'exécution")
+        warnings.append(f"{url_strings_libs} URL string(s) in LIBRARIES: normal for minified code (source maps, license links). Confirm at the smoke test that none is fetched at runtime")
 
-    n_anchors = count_external_anchors(hors_libs)
+    n_anchors = count_external_anchors(outside_libs)
     if n_anchors:
-        warnings.append(f"{n_anchors} lien(s) externe(s) <a href=\"http...\"> — n'empêchent pas l'outil de tourner hors ligne, mais ne s'ouvriront pas sans connexion. OK si assumé")
+        warnings.append(f"{n_anchors} external link(s) <a href=\"http...\">: they don't stop the tool from running offline, but won't open without a connection. Fine if deliberate")
 
     missing = [s for s in SENTINELS if s not in spans]
     if missing:
-        errors.append(f"Marqueur(s) sentinelle(s) manquant(s) : {', '.join(missing)}")
+        errors.append(f"Missing sentinel marker(s): {', '.join(missing)}")
     else:
-        oks.append("Les 4 sections sentinelles sont présentes")
+        oks.append("All 4 sentinel sections are present")
         order = [name for _, name in sorted((v[0], k) for k, v in spans.items())]
         if order.index("LIBRARIES") > order.index("APP CODE"):
-            errors.append("La section APP CODE doit venir APRÈS la section LIBRARIES")
+            errors.append("The APP CODE section must come AFTER the LIBRARIES section")
 
     app_code = html[spans["APP CODE"][0]:spans["APP CODE"][1]] if "APP CODE" in spans else html
     libs = libs_txt
     for pattern, label in FORBIDDEN_APIS:
         if re.search(pattern, app_code):
-            errors.append(f"{label} détecté dans APP CODE — interdit en file://")
+            errors.append(f"{label} detected in APP CODE: forbidden under file://")
         elif libs and re.search(pattern, libs):
-            warnings.append(f"{label} présent dans LIBRARIES (souvent du code inerte de détection — vérifier qu'aucun chemin d'exécution ne l'utilisé)")
+            warnings.append(f"{label} present in LIBRARIES (often inert feature-detection code; check that no execution path uses it)")
 
     for m in re.finditer(r"new\s+Worker\s*\(\s*([^)]*)", app_code):
         arg = m.group(1).strip()
         blob_like = ("createObjectURL" in arg) or ("blob:" in arg.lower())
         if re.match(r"[\"'][^\"']*\.js[\"']", arg) or re.search(r"[\"']https?://", arg):
-            errors.append("new Worker(<fichier/URL>) dans APP CODE — un worker chargé depuis un fichier est bloqué en file:// (origine 'null'). Inliner le script du worker en Blob")
+            errors.append("new Worker(<file/URL>) in APP CODE: a worker loaded from a file is blocked under file:// ('null' origin). Inline the worker script as a Blob")
         elif blob_like:
-            warnings.append("new Worker(Blob) dans APP CODE — fonctionne en file:// mais comportement variable selon navigateur/version. A CONFIRMER au smoke test (Chrome, Edge ET Firefox)")
+            warnings.append("new Worker(Blob) in APP CODE: works under file:// but behavior varies across browsers/versions. TO CONFIRM at the smoke test (Chrome, Edge AND Firefox)")
         else:
-            warnings.append("new Worker(...) dans APP CODE — vérifier que la source est un Blob inline et non un fichier, puis confirmér au smoke test")
+            warnings.append("new Worker(...) in APP CODE: check that the source is an inline Blob, not a file, then confirm at the smoke test")
     if re.search(r"workerSrc\s*=\s*[\"'][^\"']*\.js[\"']", app_code, re.I):
-        errors.append("workerSrc pointe vers un fichier .js — non chargeable en file://. Inliner le worker en Blob et pointer workerSrc vers l'URL du Blob (voir references/libraries.md, section pdf.js)")
+        errors.append("workerSrc points to a .js file, which is not loadable under file://. Inline the worker as a Blob and point workerSrc at the Blob URL (see references/libraries.md, pdf.js section)")
 
     if re.search(r"^\s*(import|export)\s", app_code, re.M):
-        errors.append("import/export top-level dans APP CODE — utilisér des scripts classiques")
+        errors.append("Top-level import/export in APP CODE: use classic scripts")
 
     if re.search(r"v\d+\.\d+", html, re.I):
-        oks.append("Numéro de version visible")
+        oks.append("Version number visible")
     else:
-        warnings.append("Aucun numéro de version (vX.Y) trouvé — l'en-tete doit afficher nom + version + date")
-    if re.search(r"aucune donn", html, re.I) and re.search(r"n'est envoy", html, re.I):
-        oks.append("Phrase de confidentialité présente")
+        warnings.append("No version number (vX.Y) found: the header must show name + version + date")
+    # Privacy sentence: recognized in English AND in French (delivered tools follow
+    # the requester's language). Keep both regex pairs byte-identical: existing
+    # French tools must keep passing. Any other language triggers the warning:
+    # justify it in one sentence when that is deliberate.
+    has_privacy_en = re.search(r"no data", html, re.I) and re.search(r"sent over the internet", html, re.I)
+    has_privacy_fr = re.search(r"aucune donn", html, re.I) and re.search(r"n'est envoy", html, re.I)
+    if has_privacy_en or has_privacy_fr:
+        oks.append("Privacy sentence present")
     else:
-        warnings.append("Phrase de confidentialité absente (« aucune donnée n'est envoyée sur internet »)")
+        warnings.append("Privacy sentence missing (\"no data is sent over the internet\" / « aucune donnée n'est envoyée sur internet »)")
 
     import shutil, subprocess, tempfile
-    blocs_bruts = re.findall(r"<script\b([^>]*)>(.*?)</script", html, re.S | re.I)
+    raw_blocks = re.findall(r"<script\b([^>]*)>(.*?)</script", html, re.S | re.I)
     if shutil.which("node"):
-        nb_ok = 0
-        for i, (attrs, contenu) in enumerate(blocs_bruts, start=1):
-            if not contenu.strip():
+        ok_count = 0
+        for i, (attrs, content) in enumerate(raw_blocks, start=1):
+            if not content.strip():
                 continue
             if re.search(r"type\s*=\s*[\"']?(application/json|text/template)", attrs, re.I):
                 continue
             if re.search(r"\bsrc\s*=", attrs, re.I):
                 continue
             with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as f:
-                f.write(contenu)
-                chemin_tmp = f.name
-            r = subprocess.run(["node", "--check", chemin_tmp], capture_output=True, text=True)
-            os.unlink(chemin_tmp)
+                f.write(content)
+                tmp_path = f.name
+            r = subprocess.run(["node", "--check", tmp_path], capture_output=True, text=True)
+            os.unlink(tmp_path)
             if r.returncode != 0:
-                lignes = (r.stderr or "").strip().splitlines()
-                msg = next((l.strip() for l in lignes if "Error" in l), lignes[0].strip() if lignes else "voir node --check")
-                errors.append(f"Bloc <script> n{i} : erreur de syntaxe JS — {msg}")
+                lines = (r.stderr or "").strip().splitlines()
+                msg = next((l.strip() for l in lines if "Error" in l), lines[0].strip() if lines else "see node --check")
+                errors.append(f"<script> block #{i}: JS syntax error: {msg}")
             else:
-                nb_ok += 1
-        if nb_ok:
-            oks.append(f"Syntaxe JS valide ({nb_ok} bloc(s) <script> vérifié(s) par node --check)")
+                ok_count += 1
+        if ok_count:
+            oks.append(f"Valid JS syntax ({ok_count} <script> block(s) checked with node --check)")
     else:
-        warnings.append("node introuvable : syntaxe JS des blocs <script> NON vérifiée — a compenser par une relecture attentive")
+        warnings.append("node not found: JS syntax of <script> blocks NOT checked: compensate with a careful re-read")
 
     n_open = len(re.findall(r"<script\b", html, re.I))
     n_close = len(re.findall(r"</script", html, re.I))
     if n_open != n_close:
-        errors.append(f"Balises <script> déséquilibrées ({n_open} ouvertures / {n_close} fermetures) — probable '</script' non échappé dans une librairie inlinée")
+        errors.append(f"Unbalanced <script> tags ({n_open} opening / {n_close} closing): likely an unescaped '</script' inside an inlined library")
     else:
-        oks.append(f"Balises <script> equilibrees ({n_open})")
+        oks.append(f"Balanced <script> tags ({n_open})")
 
     if re.search(r"\blocalStorage\b", app_code):
-        warnings.append("localStorage utilisé dans APP CODE — comportement variable en file://, l'outil doit fonctionner intégralement sans")
+        warnings.append("localStorage used in APP CODE: behavior varies under file://, the tool must work fully without it")
 
-    oks.append("Rappel : lancer scripts/smoke_test.cjs si un navigateur est disponible (le statique ne détecté pas les erreurs d'exécution)")
+    oks.append("Reminder: run scripts/smoke_test.cjs when a browser is available (static analysis does not catch runtime errors)")
 
-    print(f"\n=== Validation : {os.path.basename(path)} ===\n")
+    print(f"\n=== Validation: {os.path.basename(path)} ===\n")
     for msg in oks:
         print(f"  OK      {msg}")
     for msg in warnings:
-        print(f"  ATTN    {msg}")
+        print(f"  WARN    {msg}")
     for msg in errors:
-        print(f"  ERREUR  {msg}")
-    print(f"\n{len(errors)} erreur(s), {len(warnings)} avertissement(s).")
+        print(f"  ERROR   {msg}")
+    print(f"\n{len(errors)} error(s), {len(warnings)} warning(s).")
     return 1 if errors else 0
 
 

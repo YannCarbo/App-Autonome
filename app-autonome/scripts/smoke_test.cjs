@@ -1,39 +1,37 @@
 #!/usr/bin/env node
 /*
- * Smoke test d'un outil HTML autonome : ouvre RÉELLEMENT le fichier en file://
- * dans un Chromium headless et vérifie ce que le validateur statique ne peut pas voir —
- * qu'aucune erreur JS ne survient au chargement, que les éléments d'interface clés
- * existent, ET qu'aucune requête réseau ne sort.
+ * Smoke test for a self-contained HTML tool: ACTUALLY opens the file over file://
+ * in a headless Chromium and checks what the static validator cannot see: that no
+ * JS error happens on load, that the key interface elements exist, AND that no
+ * network request goes out.
  *
- * C'est le test déterministe de la promesse « coupez le Wi-Fi » :
- *   - le contexte navigateur est passé HORS LIGNE (setOffline) ;
- *   - toute requête est interceptée AVANT la création de la page : file:// vers le
- *     document lui-même = autorisé, tout le reste = bloqué ET journalisé (y compris
- *     les WebSockets via routeWebSocket, et les requêtes émises par un worker Blob) ;
- *   - après chargement, chaque onglet .onglet est cliqué (une fuite peut attendre
- *     une interaction) ;
- *   - le DOM vivant est inspecté : un <link rel="preconnect"> ou dns-prefetch vers
- *     l'extérieur ouvre une connexion SANS émettre de requête interceptable — seul
- *     ce contrôle DOM peut le voir, et c'est un échec au même titre qu'une requête ;
- *   - verdict : la SEULE requête de toute la session doit être le fichier lui-même.
- *     Une URL construite dynamiquement (new Image().src = "https://...") est invisible
- *     pour l'analyse statique — c'est ici qu'elle se fait attraper.
+ * This is the deterministic test of the "kill the Wi-Fi" promise:
+ *   - the browser context is switched OFFLINE (setOffline);
+ *   - every request is intercepted BEFORE the page is created: file:// to the
+ *     document itself = allowed, everything else = blocked AND logged (including
+ *     WebSockets via routeWebSocket, and requests issued by a Blob worker);
+ *   - after load, every .tab tab is clicked (a leak may wait for an interaction);
+ *   - the live DOM is inspected: a <link rel="preconnect"> or dns-prefetch to the
+ *     outside opens a connection WITHOUT emitting an interceptable request; only
+ *     this DOM check can see it, and it fails the test just like a request would;
+ *   - verdict: the ONLY request of the whole session must be the file itself.
+ *     A dynamically built URL (new Image().src = "https://...") is invisible to
+ *     static analysis: this is where it gets caught.
  *
- * Usage :
- *   node smoke_test.cjs chemin/vers/outil.html
+ * Usage:
+ *   node smoke_test.cjs path/to/tool.html
  *
- * Codes retour :
- *   0  = la page se charge sans erreur, les contrôles attendus sont présents,
- *        et zéro requête sortante
- *   1  = erreur JS, contrôle manquant, OU requête réseau sortante  -> À CORRIGER
- *   3  = aucun navigateur disponible (Playwright/Chromium absent) -> smoke test SAUTÉ,
- *        retomber sur le point de contrôle de première ouverture décrit à l'utilisateur
+ * Exit codes:
+ *   0  = the page loads without errors, the expected controls are present,
+ *        and zero outgoing requests
+ *   1  = JS error, missing control, OR outgoing network request  -> FIX IT
+ *   3  = no browser available (Playwright/Chromium missing) -> smoke test SKIPPED,
+ *        fall back to the first-open checkpoint described to the user
  *
- * Le validateur statique (validate_package.py) et ce smoke test sont complémentaires :
- * le premier attrape les violations de structure et de file:// AVANT exécution, le second
- * attrape les erreurs d'EXÉCUTION et les fuites réseau à l'exécution. Aucun des deux ne
- * prouve que la LOGIQUE MÉTIER est juste : ça reste la validation métier sur données
- * réelles.
+ * The static validator (validate_package.py) and this smoke test are complementary:
+ * the former catches structure and file:// violations BEFORE execution, the latter
+ * catches RUNTIME errors and network leaks at execution time. Neither proves the
+ * BUSINESS LOGIC is right: that remains the business validation on real data.
  */
 "use strict";
 
@@ -56,17 +54,17 @@ function resolvePlaywright() {
 async function main() {
   const file = process.argv[2];
   if (!file) {
-    console.log("Usage: node smoke_test.cjs chemin/vers/outil.html");
+    console.log("Usage: node smoke_test.cjs path/to/tool.html");
     process.exit(2);
   }
   const abs = path.resolve(file);
 
   const pw = resolvePlaywright();
   if (!pw || !pw.chromium) {
-    console.log("SAUTÉ  Playwright/Chromium introuvable dans cet environnement.");
-    console.log("       Le smoke test automatique n'a pas pu tourner. À compenser par le");
-    console.log("       point de contrôle de première ouverture (Étape 7 du skill) :");
-    console.log("       demander à l'utilisateur de confirmer ce qui doit s'afficher.");
+    console.log("SKIPPED  Playwright/Chromium not found in this environment.");
+    console.log("         The automated smoke test could not run. Compensate with the");
+    console.log("         first-open checkpoint (Step 7 of the skill):");
+    console.log("         ask the user to confirm what should appear on screen.");
     process.exit(3);
   }
 
@@ -74,41 +72,41 @@ async function main() {
   try {
     browser = await pw.chromium.launch();
   } catch (e) {
-    console.log("SAUTÉ  Chromium présent mais non lançable : " + (e.message || e).split("\n")[0]);
+    console.log("SKIPPED  Chromium present but not launchable: " + (e.message || e).split("\n")[0]);
     process.exit(3);
   }
 
-  // URL canonique du document (gère espaces/accents du chemin — ne pas concaténer
-  // "file://" + abs à la main).
+  // Canonical document URL (handles spaces/accents in the path; do not concatenate
+  // "file://" + abs by hand).
   const docUrl = require("url").pathToFileURL(abs).href;
 
   const jsErrors = [];
-  const requetes = [];        // toutes les requêtes de la session, quel que soit leur sort
-  let wsNonSurveille = false; // Playwright < 1.48 : pas de routeWebSocket
+  const requests = [];      // every request of the session, whatever its fate
+  let wsUnwatched = false;  // Playwright < 1.48: no routeWebSocket
 
-  // Toute l'instrumentation réseau est posée sur le CONTEXTE, AVANT la création de
-  // la page : aucune requête ne peut précéder le filet.
+  // All the network instrumentation is attached to the CONTEXT, BEFORE the page is
+  // created: no request can slip in before the net is up.
   const context = await browser.newContext();
-  await context.setOffline(true); // « coupez le Wi-Fi » émulé — n'affecte pas file://
+  await context.setOffline(true); // emulated "kill the Wi-Fi" (does not affect file://)
 
   if (typeof context.routeWebSocket === "function") {
-    // Un handshake WebSocket n'apparaît PAS dans route()/on('request') : routeWebSocket
-    // est le seul capteur fiable — et tant qu'on n'appelle pas connectToServer(),
-    // la connexion ne part jamais réellement.
+    // A WebSocket handshake does NOT show up in route()/on('request'): routeWebSocket
+    // is the only reliable sensor, and as long as connectToServer() is never called,
+    // the connection never actually leaves.
     await context.routeWebSocket("**", (ws) => {
-      requetes.push({ type: "websocket", url: ws.url() });
+      requests.push({ type: "websocket", url: ws.url() });
     });
   } else {
-    wsNonSurveille = true;
+    wsUnwatched = true;
   }
 
   await context.route("**", (route) => {
     const req = route.request();
-    requetes.push({ type: req.resourceType(), url: req.url() });
+    requests.push({ type: req.resourceType(), url: req.url() });
     if (req.url().startsWith("file://")) {
-      return route.continue(); // le document lui-même ; toute AUTRE file:// sera jugée au verdict
+      return route.continue(); // the document itself; any OTHER file:// is judged at the verdict
     }
-    return route.abort("blockedbyclient"); // rien ne sort réellement, même pendant le test
+    return route.abort("blockedbyclient"); // nothing really leaves, even during the test
   });
 
   const page = await context.newPage();
@@ -118,98 +116,98 @@ async function main() {
   let loadOk = true;
   try {
     await page.goto(docUrl, { waitUntil: "load", timeout: 15000 });
-    // Laisser les scripts différés (DOMContentLoaded, microtâches) se dérouler.
+    // Let deferred scripts (DOMContentLoaded, microtasks) run their course.
     await page.waitForTimeout(1200);
-    // Une fuite peut attendre une interaction : cliquer chaque onglet du gabarit.
-    // (timeout court : un onglet masqué ne doit pas bloquer 30 s, et un échec de
-    // clic n'est pas un échec du test — c'est le réseau qu'on observe ici.)
-    for (const onglet of await page.$$(".onglet")) {
-      await onglet.click({ timeout: 2000 }).catch(() => {});
+    // A leak may wait for an interaction: click every tab of the template.
+    // (short timeout: a hidden tab must not stall for 30 s, and a failed click
+    // is not a test failure: the network is what we watch here.)
+    for (const tab of await page.$$(".tab")) {
+      await tab.click({ timeout: 2000 }).catch(() => {});
       await page.waitForTimeout(300);
     }
-    await page.waitForTimeout(1000); // beacons tardifs
+    await page.waitForTimeout(1000); // late beacons
   } catch (e) {
     loadOk = false;
-    jsErrors.push("Échec de navigation : " + (e.message || e).split("\n")[0]);
+    jsErrors.push("Navigation failure: " + (e.message || e).split("\n")[0]);
   }
 
-  // Invariants d'interface : titre, en-tête, et — pour un outil de fichiers — un input file.
+  // Interface invariants: title, header, and, for a file tool, a file input.
   const info = await page.evaluate(() => ({
     title: document.title,
     hasHeader: !!document.querySelector("header, h1"),
     fileInputs: document.querySelectorAll('input[type="file"]').length,
     hasDownloadHook: /download/i.test(document.body ? document.body.innerHTML : ""),
     bodyLen: document.body ? document.body.innerText.trim().length : 0,
-    // preconnect/dns-prefetch n'émettent AUCUNE requête interceptable (connexion
-    // ouverte en avance, pas un chargement) : seule l'inspection du DOM vivant les
-    // voit. On lit l.href (résolu) : une cible relative devient file:// et est
-    // ignorée ; preload/prefetch émettent de vraies requêtes, déjà interceptées.
-    preconnexions: Array.from(document.querySelectorAll("link[rel]"))
+    // preconnect/dns-prefetch emit NO interceptable request (a connection opened
+    // ahead of time, not a load): only inspecting the live DOM sees them. We read
+    // l.href (resolved): a relative target becomes file:// and is ignored;
+    // preload/prefetch emit real requests, already intercepted.
+    preconnects: Array.from(document.querySelectorAll("link[rel]"))
       .filter((l) => /\b(preconnect|dns-prefetch)\b/i.test(l.rel) && /^https?:\/\//i.test(l.href))
       .map((l) => "<" + l.rel + "> " + l.href),
   })).catch(() => null);
 
   await browser.close();
 
-  // Verdict réseau : la SEULE requête légitime de toute la session est le document.
-  // (data:/blob: ne génèrent jamais d'événement : pas de liste blanche à maintenir.)
+  // Network verdict: the ONLY legitimate request of the whole session is the document.
+  // (data:/blob: never generate an event: no allowlist to maintain.)
   const violations = [];
-  for (const r of requetes) {
+  for (const r of requests) {
     if (r.url === docUrl) continue;
     if (r.url.startsWith("file://")) {
-      violations.push("<" + r.type + "> " + r.url + " (ressource file:// séparée — l'outil n'est pas monofichier)");
+      violations.push("<" + r.type + "> " + r.url + " (separate file:// resource: the tool is not a single file)");
     } else {
       violations.push("<" + r.type + "> " + r.url);
     }
   }
-  const violationsUniques = [...new Set(violations)];
+  const uniqueViolations = [...new Set(violations)];
 
-  const preconnexions = info ? info.preconnexions : [];
+  const preconnects = info ? info.preconnects : [];
 
   const problems = [];
-  if (!loadOk) problems.push("la page n'a pas pu se charger");
-  if (jsErrors.length) problems.push(jsErrors.length + " erreur(s) JS au chargement");
-  if (info && !info.hasHeader) problems.push("aucun <header>/<h1> visible (interface vide ?)");
-  if (info && info.bodyLen === 0) problems.push("le <body> est vide à l'écran");
-  if (violationsUniques.length) problems.push(violationsUniques.length + " requête(s) sortante(s) détectée(s)");
-  if (preconnexions.length) problems.push(preconnexions.length + " préconnexion(s) déclarée(s) vers l'extérieur");
+  if (!loadOk) problems.push("the page could not load");
+  if (jsErrors.length) problems.push(jsErrors.length + " JS error(s) on load");
+  if (info && !info.hasHeader) problems.push("no visible <header>/<h1> (empty interface?)");
+  if (info && info.bodyLen === 0) problems.push("the <body> is empty on screen");
+  if (uniqueViolations.length) problems.push(uniqueViolations.length + " outgoing request(s) detected");
+  if (preconnects.length) problems.push(preconnects.length + " external preconnection(s) declared");
 
-  console.log("\n=== Smoke test : " + path.basename(abs) + " ===\n");
+  console.log("\n=== Smoke test: " + path.basename(abs) + " ===\n");
   if (info) {
-    console.log("  titre        : " + JSON.stringify(info.title));
-    console.log("  en-tête      : " + (info.hasHeader ? "présent" : "ABSENT"));
-    console.log("  input file   : " + info.fileInputs + (info.fileInputs ? " trouvé(s)" : " (aucun — normal si l'outil ne lit pas de fichier)"));
-    console.log("  bouton dl    : " + (info.hasDownloadHook ? "mention 'download' présente" : "aucune (à vérifier si l'outil produit un fichier)"));
+    console.log("  title        : " + JSON.stringify(info.title));
+    console.log("  header       : " + (info.hasHeader ? "present" : "MISSING"));
+    console.log("  file input   : " + info.fileInputs + (info.fileInputs ? " found" : " (none, normal if the tool reads no file)"));
+    console.log("  dl button    : " + (info.hasDownloadHook ? "'download' mention present" : "none (check if the tool produces a file)"));
   }
-  if (violationsUniques.length) {
-    console.log("  réseau       : " + violationsUniques.length + " requête(s) sortante(s) — PROMESSE CASSÉE :");
-    violationsUniques.slice(0, 10).forEach((v) => console.log("    - " + v));
+  if (uniqueViolations.length) {
+    console.log("  network      : " + uniqueViolations.length + " outgoing request(s). PROMISE BROKEN:");
+    uniqueViolations.slice(0, 10).forEach((v) => console.log("    - " + v));
   } else {
-    console.log("  réseau       : 0 requête sortante" +
-      (preconnexions.length ? "" : " — promesse « coupez le Wi-Fi » tenue") +
-      (wsNonSurveille ? " (WebSocket non surveillé : Playwright < 1.48)" : ""));
+    console.log("  network      : 0 outgoing requests" +
+      (preconnects.length ? "" : ", the “kill the Wi-Fi” promise kept") +
+      (wsUnwatched ? " (WebSocket unwatched: Playwright < 1.48)" : ""));
   }
-  if (preconnexions.length) {
-    console.log("  préconnexion : " + preconnexions.length + " déclarée(s) vers l'extérieur — PROMESSE CASSÉE :");
-    preconnexions.slice(0, 10).forEach((p) => console.log("    - " + p));
-    console.log("    (un preconnect/dns-prefetch ouvre une connexion sans requête : retirer la balise <link>)");
+  if (preconnects.length) {
+    console.log("  preconnect   : " + preconnects.length + " declared to the outside. PROMISE BROKEN:");
+    preconnects.slice(0, 10).forEach((p) => console.log("    - " + p));
+    console.log("    (a preconnect/dns-prefetch opens a connection without a request: remove the <link> tag)");
   }
   if (jsErrors.length) {
-    console.log("\n  Erreurs détectées :");
+    console.log("\n  Errors detected:");
     jsErrors.slice(0, 10).forEach((e) => console.log("    - " + e));
   }
 
   if (problems.length) {
-    console.log("\nÉCHEC : " + problems.join(" ; ") + ".");
-    console.log("Corriger puis relancer. (Rappel : ce test ne vérifie pas la justesse des calculs métier.)");
+    console.log("\nFAILED: " + problems.join("; ") + ".");
+    console.log("Fix, then run again. (Reminder: this test does not check the business calculations.)");
     process.exit(1);
   }
-  console.log("\nOK : la page se charge sans erreur JS, l'interface s'affiche, aucune requête ne sort.");
-  console.log("Reste à valider la LOGIQUE MÉTIER sur données réelles/représentatives (voir Étape 6).");
+  console.log("\nOK: the page loads without JS errors, the interface renders, no request goes out.");
+  console.log("The BUSINESS LOGIC still needs validating on real/representative data (see Step 6).");
   process.exit(0);
 }
 
 main().catch((e) => {
-  console.log("Erreur inattendue du smoke test : " + (e && e.message ? e.message : e));
+  console.log("Unexpected smoke test error: " + (e && e.message ? e.message : e));
   process.exit(1);
 });

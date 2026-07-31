@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clean minimal fixture</title>
+<!-- POSITIVE fixture of the skill's test suite: a minimal compliant tool.
+     Expected: validator 0 errors, smoke test 0 outgoing requests. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; }
+  header { border-bottom: 2px solid #1a5fb4; padding: 12px 20px; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+  footer { text-align: center; font-size: 0.8rem; color: #5c6675; padding: 16px; }
+  .tab { background: none; border: none; padding: 8px 14px; cursor: pointer; }
+  .tab.active { color: #1a5fb4; font-weight: 600; }
+  .panel[hidden] { display: none; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header>
+  <h1>Clean minimal fixture</h1>
+  <span class="version">V1.0 · 2026-07-20</span>
+</header>
+<main>
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab active" data-tab="processing" role="tab" aria-selected="true">Processing</button>
+    <button type="button" class="tab" data-tab="rules" role="tab" aria-selected="false">Tool rules</button>
+  </nav>
+  <section class="panel" data-panel="processing" role="tabpanel">
+    <p>The fixture's processing area: no network, no external file.</p>
+  </section>
+  <section class="panel" data-panel="rules" role="tabpanel" hidden>
+    <p>This test tool does nothing: it checks that the guardrails let a compliant tool through.</p>
+  </section>
+</main>
+<footer>
+  This tool runs entirely in your browser: no data is sent over the internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+
+function activateTab(name) {
+  document.querySelectorAll(".tab").forEach(button => {
+    const isActive = button.dataset.tab === name;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+  });
+  document.querySelectorAll(".panel").forEach(panel => {
+    panel.hidden = panel.dataset.panel !== name;
+  });
+}
+document.querySelectorAll(".tab").forEach(button =>
+  button.addEventListener("click", () => activateTab(button.dataset.tab)));
+</script>
+</body>
+</html>

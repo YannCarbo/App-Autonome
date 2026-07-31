@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture: runtime leak on load</title>
+<!-- NEGATIVE test file of the skill: it DELIBERATELY contains a network leak.
+     NEVER use it as inspiration to build a tool.
+     The leak (new Image().src) is invisible to static analysis: no tag, no
+     forbidden API, just a DOM property. Expected: validator 0 errors,
+     smoke test FAILED (1 outgoing request detected on load).
+     Domain in .invalid (RFC 2606): can never resolve, even outside the harness. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Leak-on-load fixture</h1>
+  <span class="version">V1.0 · 2026-07-20</span>
+</header>
+<main>
+  <p>This fixture tries to send a network request right on open, through a channel that only execution reveals.</p>
+</main>
+<footer>
+  This tool runs entirely in your browser: no data is sent over the internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+// Dynamically built URL: the static validator cannot see it; this is exactly
+// what the smoke test's network assertion must catch.
+var pixel = new Image();
+pixel.src = "https://leak-test.invalid/px.gif";
+</script>
+</body>
+</html>

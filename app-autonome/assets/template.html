@@ -1,90 +1,90 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{NOM_OUTIL}}</title>
+<title>{{TOOL_NAME}}</title>
 
 <!-- ===== SECTION: STYLES ===== -->
 <style>
-  /* Palette « App autonome » — reprise de la page vitrine (bento émeraude).
-     Personnaliser --accent pour lier chaque outil à son domaine métier ;
-     les tons voisins (--accent-fonce/-clair/-vif) se dérivent de la même teinte.
+  /* "App autonome" palette, carried over from the showcase page (emerald bento).
+     Customize --accent to tie each tool to its business domain; the neighboring
+     tones (--accent-dark/-light/-bright) derive from the same hue.
 
-     Polices : JAMAIS de police externe (l'outil doit tourner hors ligne).
-     Les piles ci-dessous préfèrent les polices de la vitrine SI elles sont
-     déjà installées sur le poste, sinon retombent sur les polices système —
-     aucun @import, aucun <link>. Pour un rendu identique à la vitrine, on peut
-     inliner Archivo / Space Grotesk / JetBrains Mono en base64 (@font-face). */
+     Fonts: NEVER an external font (the tool must run offline). The stacks below
+     prefer the showcase fonts IF they are already installed on the machine, and
+     fall back to system fonts otherwise: no @import, no <link>. For a rendering
+     identical to the showcase, Archivo / Space Grotesk / JetBrains Mono can be
+     inlined as base64 (@font-face). */
   :root {
     --accent: #1E7A55;
-    --accent-fonce: #16603F;
-    --accent-clair: #E5F1EA;
-    --accent-vif: #5FCF9E;
-    --fond: #ECEDEF;
-    --carte: #FFFFFF;
-    --carte-2: #F6F7F5;
-    --encre: #15171B;
-    --texte: #15171B;
-    --texte-2: #66706A;
-    --bord: #E2E4E7;
-    --bord-2: #DCE2DD;
+    --accent-dark: #16603F;
+    --accent-light: #E5F1EA;
+    --accent-bright: #5FCF9E;
+    --bg: #ECEDEF;
+    --card: #FFFFFF;
+    --card-2: #F6F7F5;
+    --ink: #15171B;
+    --text: #15171B;
+    --text-2: #66706A;
+    --border: #E2E4E7;
+    --border-2: #DCE2DD;
     --ok: #1E7A55;
-    --attention: #B35A00;
-    --erreur: #B3261E;
-    --rayon: 16px;
-    --rayon-s: 10px;
-    --ombre: 0 12px 30px rgba(9, 50, 36, .09);
-    --ombre-accent: 0 10px 22px rgba(30, 115, 84, .22);
-    --police-corps: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --police-titre: "Space Grotesk", "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --police-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --warning: #B35A00;
+    --error: #B3261E;
+    --radius: 16px;
+    --radius-s: 10px;
+    --shadow: 0 12px 30px rgba(9, 50, 36, .09);
+    --shadow-accent: 0 10px 22px rgba(30, 115, 84, .22);
+    --font-body: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-heading: "Space Grotesk", "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: var(--police-corps);
-    background: var(--fond);
-    color: var(--texte);
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
     line-height: 1.5;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
   }
 
-  /* En-tête : barre claire, petite marque émeraude qui fait le lien visuel
-     avec la vitrine. Le nom de l'outil reste l'élément principal. */
+  /* Header: light bar, small emerald brand mark that visually links back to the
+     showcase. The tool's name remains the main element. */
   header {
-    background: var(--carte);
-    border-bottom: 1px solid var(--bord);
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
     padding: 15px 28px;
     display: flex;
     align-items: center;
     gap: 13px;
   }
-  header .marque {
+  header .brand {
     width: 28px; height: 28px;
     border-radius: 8px;
     background: var(--accent);
     position: relative;
     flex: none;
   }
-  header .marque::after {
+  header .brand::after {
     content: ""; position: absolute; inset: 9px;
-    border-radius: 3px; background: var(--accent-vif);
+    border-radius: 3px; background: var(--accent-bright);
   }
   header h1 {
-    font-family: var(--police-titre);
+    font-family: var(--font-heading);
     font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: -.01em;
     margin: 0;
   }
   header .version {
-    color: var(--texte-2);
-    font: 500 .78rem/1 var(--police-mono);
+    color: var(--text-2);
+    font: 500 .78rem/1 var(--font-mono);
     padding: 5px 9px;
-    border: 1px solid var(--bord);
+    border: 1px solid var(--border);
     border-radius: 999px;
     margin-left: 2px;
   }
@@ -93,92 +93,92 @@
 
   footer {
     text-align: center;
-    color: var(--texte-2);
+    color: var(--text-2);
     font-size: .8rem;
     padding: 18px;
   }
 
-  .carte {
-    background: var(--carte);
-    border: 1px solid var(--bord);
-    border-radius: var(--rayon);
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding: 22px 24px;
     margin-bottom: 20px;
-    box-shadow: var(--ombre);
+    box-shadow: var(--shadow);
   }
-  .regles { font-size: .9rem; color: var(--texte-2); }
-  .regles strong { color: var(--encre); font-family: var(--police-titre); font-weight: 600; }
-  .regles ul { margin: 10px 0 0; padding-left: 20px; }
-  .regles li { margin: 4px 0; }
+  .rules { font-size: .9rem; color: var(--text-2); }
+  .rules strong { color: var(--ink); font-family: var(--font-heading); font-weight: 600; }
+  .rules ul { margin: 10px 0 0; padding-left: 20px; }
+  .rules li { margin: 4px 0; }
 
-  /* Onglets Traitement / Règles de l'outil (Étape 5 du skill).
-     "Traitement" actif par défaut ; "Règles de l'outil" reste à un clic. */
-  .onglets {
+  /* Processing / Tool rules tabs (Step 5 of the skill).
+     "Processing" active by default; "Tool rules" stays one click away. */
+  .tabs {
     display: flex;
     gap: 6px;
-    border-bottom: 1px solid var(--bord);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 22px;
   }
-  .onglet {
+  .tab {
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
     padding: 10px 16px;
-    font: 500 .95rem/1 var(--police-corps);
-    color: var(--texte-2);
+    font: 500 .95rem/1 var(--font-body);
+    color: var(--text-2);
     cursor: pointer;
     transition: color .15s ease, border-color .15s ease;
   }
-  .onglet:hover { color: var(--texte); }
-  .onglet.actif { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
-  .panneau[hidden] { display: none; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .panel[hidden] { display: none; }
 
-  button.principal {
+  button.primary {
     background: var(--accent);
     color: #fff;
     border: none;
-    border-radius: var(--rayon-s);
+    border-radius: var(--radius-s);
     padding: 11px 20px;
-    font: 600 1rem/1 var(--police-corps);
+    font: 600 1rem/1 var(--font-body);
     cursor: pointer;
-    box-shadow: var(--ombre-accent);
+    box-shadow: var(--shadow-accent);
     transition: background .15s ease, box-shadow .15s ease, transform .06s ease;
   }
-  button.principal:hover { background: var(--accent-fonce); }
-  button.principal:active { transform: translateY(1px); }
-  button.principal:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+  button.primary:hover { background: var(--accent-dark); }
+  button.primary:active { transform: translateY(1px); }
+  button.primary:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
 
-  /* Zone de dépôt : <input type="file"> reste la source de vérité,
-     le glisser-déposer n'est qu'un confort. */
-  .zone-depot {
-    border: 2px dashed var(--bord-2);
-    border-radius: var(--rayon);
+  /* Drop zone: <input type="file"> remains the source of truth,
+     drag-and-drop is only a convenience. */
+  .drop-zone {
+    border: 2px dashed var(--border-2);
+    border-radius: var(--radius);
     padding: 36px;
     text-align: center;
-    color: var(--texte-2);
-    background: var(--carte-2);
+    color: var(--text-2);
+    background: var(--card-2);
     cursor: pointer;
     transition: border-color .15s ease, background .15s ease, color .15s ease;
   }
-  .zone-depot.survol { border-color: var(--accent); background: var(--accent-clair); color: var(--accent-fonce); }
+  .drop-zone.dragover { border-color: var(--accent); background: var(--accent-light); color: var(--accent-dark); }
 
-  .rapport-ok { color: var(--ok); font-weight: 600; }
-  .rapport-attention { color: var(--attention); font-weight: 600; }
-  .rapport-erreur { color: var(--erreur); font-weight: 600; }
+  .report-ok { color: var(--ok); font-weight: 600; }
+  .report-warning { color: var(--warning); font-weight: 600; }
+  .report-error { color: var(--error); font-weight: 600; }
 
-  table.apercu { border-collapse: collapse; width: 100%; font-size: .85rem; }
-  table.apercu th, table.apercu td { border: 1px solid var(--bord); padding: 6px 9px; text-align: left; }
-  table.apercu th { background: var(--carte-2); color: var(--texte-2); font-weight: 600; }
-  table.apercu tbody tr:nth-child(even) td { background: #FBFCFB; }
+  table.preview { border-collapse: collapse; width: 100%; font-size: .85rem; }
+  table.preview th, table.preview td { border: 1px solid var(--border); padding: 6px 9px; text-align: left; }
+  table.preview th { background: var(--card-2); color: var(--text-2); font-weight: 600; }
+  table.preview tbody tr:nth-child(even) td { background: #FBFCFB; }
 
-  /* Accessibilité : focus clavier visible + respect de prefers-reduced-motion. */
+  /* Accessibility: visible keyboard focus + respect for prefers-reduced-motion. */
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
   @media (max-width: 560px) {
     header { padding: 13px 18px; }
     main { margin: 22px auto; padding: 0 18px; }
-    .carte { padding: 18px; }
+    .card { padding: 18px; }
   }
 </style>
 
@@ -186,110 +186,109 @@
 </head>
 <body>
 <header>
-  <!-- {{NOM_OUTIL}} : choisi avec l'utilisateur, jamais seul (voir Étape 1).
-       {{DATE}} au format JJ/MM/AAAA. Incrémenter "V1.0" à chaque évolution
-       (mode maintenance) : le nom de fichier suit en kebab-case minuscule. -->
-  <div class="marque" aria-hidden="true"></div>
-  <h1>{{NOM_OUTIL}}</h1>
-  <span class="version">V1.0 du {{DATE}}</span>
+  <!-- {{TOOL_NAME}}: chosen with the user, never alone (see Step 1).
+       {{DATE}} in the delivered tool's date format. Bump "V1.0" on every
+       evolution (maintenance mode): the file name follows in lowercase kebab-case. -->
+  <div class="brand" aria-hidden="true"></div>
+  <h1>{{TOOL_NAME}}</h1>
+  <span class="version">V1.0 · {{DATE}}</span>
 </header>
 
 <main>
-  <!-- Deux onglets obligatoires (Étape 5) : "Traitement" actif par défaut pour
-       l'usage quotidien, "Règles de l'outil" toujours à un clic. -->
-  <nav class="onglets" role="tablist">
-    <button type="button" class="onglet actif" data-onglet="traitement" role="tab" aria-selected="true">Traitement</button>
-    <button type="button" class="onglet" data-onglet="regles" role="tab" aria-selected="false">Règles de l'outil</button>
+  <!-- Two mandatory tabs (Step 5): "Processing" active by default for everyday
+       use, "Tool rules" always one click away. Labels follow the tool's language. -->
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab active" data-tab="processing" role="tab" aria-selected="true">Processing</button>
+    <button type="button" class="tab" data-tab="rules" role="tab" aria-selected="false">Tool rules</button>
   </nav>
 
-  <section class="panneau" data-panneau="traitement" role="tabpanel">
-    <!-- Construire ici l'interface de traitement. Rappels obligatoires pour tout
-         outil de transformation de données :
-         1. aperçu avant/après (10-20 lignes) AVANT le bouton de téléchargement
-         2. rapport chiffré : lignes lues / transformées / anomalies (avec n° de ligne)
-         3. aucune correction silencieuse : les cas ambigus sont listés, pas devinés
-         4. le fichier produit porte un nom distinct de l'original -->
+  <section class="panel" data-panel="processing" role="tabpanel">
+    <!-- Build the processing interface here. Mandatory reminders for any
+         data-transformation tool:
+         1. before/after preview (10-20 rows) BEFORE the download button
+         2. numbered report: rows read / transformed / anomalies (with row numbers)
+         3. no silent correction: ambiguous cases are listed, not guessed
+         4. the produced file bears a name distinct from the original -->
   </section>
 
-  <section class="panneau" data-panneau="regles" role="tabpanel" hidden>
-    <!-- Les règles appliquées, en langage courant : c'est ici que vivent les
-         hypothèses prises à l'Étape 1. -->
-    <div class="carte regles">
-      <strong>Ce que fait cet outil :</strong>
+  <section class="panel" data-panel="rules" role="tabpanel" hidden>
+    <!-- The applied rules, in plain language: this is where the assumptions
+         made at Step 1 live. -->
+    <div class="card rules">
+      <strong>What this tool does:</strong>
       <ul>
-        <li>{{REGLE_1}}</li>
-        <li>{{REGLE_2}}</li>
+        <li>{{RULE_1}}</li>
+        <li>{{RULE_2}}</li>
       </ul>
     </div>
   </section>
 </main>
 
 <footer>
-  Cet outil fonctionne entièrement dans votre navigateur — aucune donnée n'est envoyée sur internet.
+  This tool runs entirely in your browser: no data is sent over the internet.
 </footer>
 
-<!-- ===== SECTION: LIBRARIES (ne pas éditer) ===== -->
-<!-- Chaque librairie inline dans sa propre balise script, précédée d'un
-     commentaire nom@version + URL d'origine. Vérifier l'échappement de la
-     séquence de fermeture de balise avant insertion (voir references/libraries.md). -->
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+<!-- Each library inlined in its own script tag, preceded by a name@version
+     comment + origin URL. Check the escaping of the closing-tag sequence
+     before inserting (see references/libraries.md). -->
 
 <!-- ===== SECTION: APP CODE ===== -->
 <script>
 "use strict";
 
 // ------------------------------------------------------------------
-// Utilitaires standard file:// — à conserver tels quels si utilisés
+// Standard file:// utilities: keep as-is when used
 // ------------------------------------------------------------------
 
-/** Télécharge un contenu comme fichier (seul mécanisme de sortie fiable en file://). */
-function telechargerFichier(contenu, nomFichier, typeMime) {
-  const blob = contenu instanceof Blob ? contenu : new Blob([contenu], { type: typeMime || "application/octet-stream" });
+/** Downloads content as a file (the only reliable output mechanism under file://). */
+function downloadFile(content, fileName, mimeType) {
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType || "application/octet-stream" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = nomFichier;
+  a.download = fileName;
   document.body.appendChild(a);
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/** Traite un tableau par lots sans geler l'interface (pas de Web Worker en file://). */
-function traiterParLots(elements, tailleLot, traiterUn, surProgression) {
+/** Processes an array in batches without freezing the UI (no Web Worker under file://). */
+function processInBatches(items, batchSize, processOne, onProgress) {
   return new Promise((resolve) => {
-    const resultats = [];
+    const results = [];
     let i = 0;
-    (function lot() {
-      const fin = Math.min(i + tailleLot, elements.length);
-      for (; i < fin; i++) resultats.push(traiterUn(elements[i], i));
-      if (surProgression) surProgression(i, elements.length);
-      if (i < elements.length) setTimeout(lot, 0);
-      else resolve(resultats);
+    (function batch() {
+      const end = Math.min(i + batchSize, items.length);
+      for (; i < end; i++) results.push(processOne(items[i], i));
+      if (onProgress) onProgress(i, items.length);
+      if (i < items.length) setTimeout(batch, 0);
+      else resolve(results);
     })();
   });
 }
 
-/** Bascule entre les onglets "Traitement" et "Règles de l'outil" (voir Étape 5). */
-function activerOnglet(nom) {
-  document.querySelectorAll(".onglet").forEach(bouton => {
-    const actif = bouton.dataset.onglet === nom;
-    bouton.classList.toggle("actif", actif);
-    bouton.setAttribute("aria-selected", String(actif));
+/** Switches between the "Processing" and "Tool rules" tabs (see Step 5). */
+function activateTab(name) {
+  document.querySelectorAll(".tab").forEach(button => {
+    const isActive = button.dataset.tab === name;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
   });
-  document.querySelectorAll(".panneau").forEach(panneau => {
-    panneau.hidden = panneau.dataset.panneau !== nom;
+  document.querySelectorAll(".panel").forEach(panel => {
+    panel.hidden = panel.dataset.panel !== name;
   });
 }
-document.querySelectorAll(".onglet").forEach(bouton =>
-  bouton.addEventListener("click", () => activerOnglet(bouton.dataset.onglet)));
-// Pour un usage critique où l'onglet "Règles de l'outil" doit être vu au moins
-// une fois avant le premier traitement, voir l'exemple de mémorisation de
-// préférence de l'Étape 5 du skill — volontairement absent d'ici pour ne pas
-// l'imposer par défaut.
+document.querySelectorAll(".tab").forEach(button =>
+  button.addEventListener("click", () => activateTab(button.dataset.tab)));
+// For critical usage where the "Tool rules" tab must be seen at least once
+// before the first run, see the preference-memorization example in Step 5 of
+// the skill; deliberately absent here so it is not imposed by default.
 
 // ------------------------------------------------------------------
-// Code applicatif de l'outil — lisible, commenté, jamais minifié.
-// C'est la seule zone (avec MARKUP et STYLES) qu'une IA relira en maintenance.
+// The tool's application code: readable, commented, never minified.
+// It is the only zone (with MARKUP and STYLES) an AI re-reads in maintenance.
 // ------------------------------------------------------------------
 
 </script>

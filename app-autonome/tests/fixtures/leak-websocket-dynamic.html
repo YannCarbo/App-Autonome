@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture: dynamic WebSocket leak</title>
+<!-- NEGATIVE test file of the skill: it DELIBERATELY contains a network leak.
+     NEVER use it as inspiration to build a tool.
+     The WebSocket constructor is resolved dynamically (window["WebSock"+"et"]):
+     no "new WebSocket(" for the static validator to see. And a WebSocket
+     handshake never shows up in classic route() interception: this fixture
+     exercises precisely the smoke test's routeWebSocket sensor; without it,
+     a regression of that sensor would go unnoticed.
+     Expected: validator 0 errors, smoke test FAILED (1 outgoing request).
+     Domain in .invalid (RFC 2606): can never resolve, even outside the harness. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Dynamic WebSocket leak fixture</h1>
+  <span class="version">V1.0 · 2026-07-27</span>
+</header>
+<main>
+  <p>This fixture tries to open a WebSocket connection right on open, through a dynamically resolved constructor that only execution reveals.</p>
+</main>
+<footer>
+  This tool runs entirely in your browser: no data is sent over the internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+// Dynamically resolved constructor: invisible to static analysis; only the
+// smoke test's routeWebSocket sensor can log this handshake.
+try {
+  var Constructor = window["WebSock" + "et"];
+  new Constructor("wss://leak-test.invalid/stream");
+} catch (e) { /* even blocked, the attempt must have been logged */ }
+</script>
+</body>
+</html>

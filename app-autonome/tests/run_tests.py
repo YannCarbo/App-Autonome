@@ -1,163 +1,163 @@
 #!/usr/bin/env python3
 """
-Tests déterministes des garde-fous du skill : vérifient que validate_package.py et
-smoke_test.cjs détectent bien CHAQUE canal réseau connu — et laissent passer un
-outil conforme. C'est ce qui rend la promesse « rien ne sort de l'ordinateur »
-vérifiable, pas seulement déclarée.
+Deterministic tests of the skill's guardrails: they verify that validate_package.py
+and smoke_test.cjs catch EVERY known network channel, and let a compliant tool
+through. This is what makes the "nothing leaves the computer" promise verifiable,
+not merely declared.
 
-Chaque fixture de tests/fixtures/ contient soit zéro violation (fixtures « sain- »),
-soit une violation précise. La table ATTENDUS ci-dessous déclare, pour chacune, le
-code retour du validateur, les motifs qui doivent apparaître dans sa sortie, et le
-verdict attendu du smoke test. Les fixtures « fuite-* » sont la clé de voûte :
-elles PASSENT le validateur statique (URL ou constructeur construits dynamiquement,
-invisibles sans exécution) et DOIVENT faire échouer l'assertion réseau du smoke
-test — la preuve que les deux couches sont complémentaires. Cas particulier :
-link-preconnect-externe est attrapée par LES DEUX couches (le smoke via son
-contrôle du DOM vivant — seule défense pour un fichier sans la structure du
-gabarit, qui échappe au validateur, comme la hero page docs/index.html).
+Each fixture in tests/fixtures/ contains either zero violations ("clean-" fixtures)
+or one precise violation. The EXPECTED table below declares, for each of them, the
+validator's exit code, the patterns that must appear in its output, and the expected
+smoke test verdict. The "leak-*" fixtures are the keystone: they PASS the static
+validator (dynamically built URL or constructor, invisible without execution) and
+MUST fail the smoke test's network assertion: the proof that the two layers are
+complementary. Special case: link-preconnect-external is caught by BOTH layers (the
+smoke test via its live-DOM check, its only defense for a file without the
+template's structure, which escapes the validator, like the docs/index.html hero
+page).
 
-Usage : python3 run_tests.py          (depuis n'importe quel répertoire)
+Usage: python3 run_tests.py          (from any directory)
 
-Codes retour :
-  0 = tous les tests passent (statique ET smoke)
-  1 = au moins un écart attendu/obtenu -> un garde-fou a régressé, À CORRIGER
-  3 = phase statique 100% verte mais smoke test sauté (node ou Playwright/Chromium
-      absents) ; en CI, exiger 0 : un 3 signifie que l'environnement est incomplet
+Exit codes:
+  0 = every test passes (static AND smoke)
+  1 = at least one expected/actual mismatch -> a guardrail regressed, FIX IT
+  3 = static phase 100% green but smoke test skipped (node or Playwright/Chromium
+      missing); in CI, require 0: a 3 means the environment is incomplete
 
-NOTE DE CONTRAT : les « motifs » sont des sous-chaînes des messages des scripts.
-Tout changement de formulation dans validate_package.py ou smoke_test.cjs doit
-être répercuté ici — c'est voulu : les messages font partie du contrat.
+CONTRACT NOTE: the "patterns" are substrings of the scripts' messages. Any
+rewording in validate_package.py or smoke_test.cjs must be mirrored here; that
+is deliberate: the messages are part of the contract.
 """
 
 import subprocess
 import sys
 from pathlib import Path
 
-ICI = Path(__file__).resolve().parent
-FIXTURES = ICI / "fixtures"
-VALIDATEUR = ICI.parent / "scripts" / "validate_package.py"
-SMOKE = ICI.parent / "scripts" / "smoke_test.cjs"
+HERE = Path(__file__).resolve().parent
+FIXTURES = HERE / "fixtures"
+VALIDATOR = HERE.parent / "scripts" / "validate_package.py"
+SMOKE = HERE.parent / "scripts" / "smoke_test.cjs"
 
-# smoke : "ok" = doit passer avec 0 requête sortante ; "fuite" = doit échouer sur
-# une requête sortante ; "preconnexion" = doit échouer sur le contrôle DOM des
-# préconnexions ; None = non concerné (la violation est purement statique).
-ATTENDUS = [
-    {"fixture": "sain-minimal.html", "exit": 0, "motifs": ["0 erreur"], "smoke": "ok"},
-    {"fixture": "sain-lib-urls-inertes.html", "exit": 0,
-     "motifs": ["0 erreur", "URL en chaîne dans LIBRARIES", "fetch() présent dans LIBRARIES"],
+# smoke: "ok" = must pass with 0 outgoing requests; "leak" = must fail on an
+# outgoing request; "preconnect" = must fail on the DOM preconnection check;
+# None = not relevant (the violation is purely static).
+EXPECTED = [
+    {"fixture": "clean-minimal.html", "exit": 0, "patterns": ["0 error"], "smoke": "ok"},
+    {"fixture": "clean-lib-inert-urls.html", "exit": 0,
+     "patterns": ["0 error", "URL string", "fetch() present in LIBRARIES"],
      "smoke": "ok"},
-    {"fixture": "fuite-image-chargement.html", "exit": 0, "motifs": ["0 erreur"], "smoke": "fuite"},
-    {"fixture": "fuite-au-clic-onglet.html", "exit": 0, "motifs": ["0 erreur"], "smoke": "fuite"},
-    # WebSocket au constructeur résolu dynamiquement : invisible au statique, et un
-    # handshake WS n'apparaît pas dans route() — exerce le capteur routeWebSocket.
-    {"fixture": "fuite-websocket-dynamique.html", "exit": 0, "motifs": ["0 erreur"], "smoke": "fuite"},
-    # preconnect : aucune requête interceptable — exerce le contrôle du DOM vivant.
-    {"fixture": "link-preconnect-externe.html", "exit": 1,
-     "motifs": ["ressource(s) chargée(s) au runtime", "<link>"], "smoke": "preconnexion"},
-    {"fixture": "fetch-app-code.html", "exit": 1, "motifs": ["fetch() détecté dans APP CODE"], "smoke": None},
-    {"fixture": "sendbeacon-app-code.html", "exit": 1, "motifs": ["sendBeacon"], "smoke": None},
-    {"fixture": "websocket-app-code.html", "exit": 1, "motifs": ["WebSocket détecté dans APP CODE"], "smoke": None},
-    {"fixture": "temps-reel-app-code.html", "exit": 1, "motifs": ["EventSource", "RTCPeerConnection"], "smoke": None},
-    {"fixture": "script-src-externe.html", "exit": 1,
-     "motifs": ["ressource(s) chargée(s) au runtime", "<script-src>"], "smoke": None},
-    {"fixture": "img-src-relative.html", "exit": 1, "motifs": ["<img-src>"], "smoke": None},
-    {"fixture": "srcset-distant.html", "exit": 1, "motifs": ["<srcset>"], "smoke": None},
-    {"fixture": "a-ping.html", "exit": 1, "motifs": ["<ping>"], "smoke": None},
-    {"fixture": "meta-refresh-url.html", "exit": 1, "motifs": ["<meta-refresh>"], "smoke": None},
-    {"fixture": "link-css-relative.html", "exit": 1, "motifs": ["<link-stylesheet>"], "smoke": None},
-    {"fixture": "css-url-mixte.html", "exit": 1,
-     "motifs": ["url()/@import CSS externe", "url() CSS relative"], "smoke": None},
-    {"fixture": "worker-et-module.html", "exit": 1,
-     "motifs": ['type="module"', "new Worker("], "smoke": None},
+    {"fixture": "leak-image-load.html", "exit": 0, "patterns": ["0 error"], "smoke": "leak"},
+    {"fixture": "leak-on-tab-click.html", "exit": 0, "patterns": ["0 error"], "smoke": "leak"},
+    # WebSocket with a dynamically resolved constructor: invisible to static
+    # analysis, and a WS handshake never shows in route(); exercises routeWebSocket.
+    {"fixture": "leak-websocket-dynamic.html", "exit": 0, "patterns": ["0 error"], "smoke": "leak"},
+    # preconnect: no interceptable request; exercises the live-DOM check.
+    {"fixture": "link-preconnect-external.html", "exit": 1,
+     "patterns": ["loaded at runtime", "<link>"], "smoke": "preconnect"},
+    {"fixture": "fetch-app-code.html", "exit": 1, "patterns": ["fetch() detected in APP CODE"], "smoke": None},
+    {"fixture": "sendbeacon-app-code.html", "exit": 1, "patterns": ["sendBeacon"], "smoke": None},
+    {"fixture": "websocket-app-code.html", "exit": 1, "patterns": ["WebSocket detected in APP CODE"], "smoke": None},
+    {"fixture": "realtime-app-code.html", "exit": 1, "patterns": ["EventSource", "RTCPeerConnection"], "smoke": None},
+    {"fixture": "script-src-external.html", "exit": 1,
+     "patterns": ["loaded at runtime", "<script-src>"], "smoke": None},
+    {"fixture": "img-src-relative.html", "exit": 1, "patterns": ["<img-src>"], "smoke": None},
+    {"fixture": "srcset-remote.html", "exit": 1, "patterns": ["<srcset>"], "smoke": None},
+    {"fixture": "a-ping.html", "exit": 1, "patterns": ["<ping>"], "smoke": None},
+    {"fixture": "meta-refresh-url.html", "exit": 1, "patterns": ["<meta-refresh>"], "smoke": None},
+    {"fixture": "link-css-relative.html", "exit": 1, "patterns": ["<link-stylesheet>"], "smoke": None},
+    {"fixture": "css-url-mixed.html", "exit": 1,
+     "patterns": ["external CSS url()", "relative CSS url()"], "smoke": None},
+    {"fixture": "worker-and-module.html", "exit": 1,
+     "patterns": ['type="module"', "new Worker("], "smoke": None},
 ]
 
-MOTIF_SMOKE = {"ok": (0, "0 requête sortante"), "fuite": (1, "requête(s) sortante(s)"),
-               "preconnexion": (1, "préconnexion")}
+SMOKE_PATTERNS = {"ok": (0, "0 outgoing requests"), "leak": (1, "outgoing request"),
+                  "preconnect": (1, "preconnection")}
 
 
-def lancer(cmd):
-    """Exécute une commande, retourne (code, sortie). Timeout/absence = échec, pas crash."""
+def run_cmd(cmd):
+    """Runs a command, returns (code, output). Timeout/absence = failure, not a crash."""
     try:
         r = subprocess.run(cmd, capture_output=True, text=True,
                            encoding="utf-8", errors="replace", timeout=120)
         return r.returncode, (r.stdout or "") + (r.stderr or "")
     except subprocess.TimeoutExpired:
-        return -1, "TIMEOUT après 120 s"
+        return -1, "TIMEOUT after 120 s"
     except FileNotFoundError as e:
-        return -1, f"COMMANDE INTROUVABLE : {e.filename or cmd[0]}"
+        return -1, f"COMMAND NOT FOUND: {e.filename or cmd[0]}"
 
 
-def verifier(nom, code_attendu, motifs, code, sortie, details):
-    """Compare attendu/obtenu, alimente details en cas d'écart. Retourne True si OK."""
+def check(name, expected_code, patterns, code, output, details):
+    """Compares expected/actual, feeds details on mismatch. Returns True if OK."""
     ok = True
-    if code != code_attendu:
-        details.append(f"{nom} : code retour {code} (attendu {code_attendu})")
+    if code != expected_code:
+        details.append(f"{name}: exit code {code} (expected {expected_code})")
         ok = False
-    for motif in motifs:
-        if motif not in sortie:
-            details.append(f"{nom} : motif absent de la sortie : « {motif} »")
+    for pattern in patterns:
+        if pattern not in output:
+            details.append(f"{name}: pattern missing from output: \"{pattern}\"")
             ok = False
     if not ok:
-        extrait = "\n      ".join(sortie.strip().splitlines()[-8:])
-        details.append(f"{nom} — dernières lignes de la sortie :\n      {extrait}")
+        excerpt = "\n      ".join(output.strip().splitlines()[-8:])
+        details.append(f"{name}, last lines of output:\n      {excerpt}")
     return ok
 
 
 def main():
-    manquantes = [a["fixture"] for a in ATTENDUS if not (FIXTURES / a["fixture"]).is_file()]
-    if manquantes:
-        print(f"ERREUR : fixture(s) introuvable(s) : {', '.join(manquantes)}")
+    missing = [e["fixture"] for e in EXPECTED if not (FIXTURES / e["fixture"]).is_file()]
+    if missing:
+        print(f"ERROR: fixture(s) not found: {', '.join(missing)}")
         return 1
 
     details = []
-    lignes = []
-    statique_ok = True
-    smoke_saute = False
+    rows = []
+    static_ok = True
+    smoke_skipped = False
     smoke_ok = True
 
-    # --- Phase 1 : le validateur statique rend-il les verdicts attendus ? ---
-    for a in ATTENDUS:
-        chemin = FIXTURES / a["fixture"]
-        code, sortie = lancer([sys.executable, str(VALIDATEUR), str(chemin)])
-        ok = verifier(a["fixture"], a["exit"], a["motifs"], code, sortie, details)
-        statique_ok = statique_ok and ok
-        lignes.append([a["fixture"], f"exit {a['exit']} → {code}", "OK" if ok else "ÉCART"])
+    # --- Phase 1: does the static validator return the expected verdicts? ---
+    for e in EXPECTED:
+        fixture_path = FIXTURES / e["fixture"]
+        code, output = run_cmd([sys.executable, str(VALIDATOR), str(fixture_path)])
+        ok = check(e["fixture"], e["exit"], e["patterns"], code, output, details)
+        static_ok = static_ok and ok
+        rows.append([e["fixture"], f"exit {e['exit']} → {code}", "OK" if ok else "MISMATCH"])
 
-    # --- Phase 2 : l'assertion réseau du smoke test tient-elle ses promesses ? ---
-    concernes = [a for a in ATTENDUS if a["smoke"]]
-    for i, a in enumerate(concernes):
-        chemin = FIXTURES / a["fixture"]
-        code, sortie = lancer(["node", str(SMOKE), str(chemin)])
-        if code == 3 or "COMMANDE INTROUVABLE" in sortie:
-            # Pas de navigateur (ou pas de node) : environnement incomplet, pas une
-            # régression — sauté pour toutes (inutile de réessayer les suivantes).
-            smoke_saute = True
-            for reste in concernes[i:]:
-                lignes.append([reste["fixture"] + " (smoke)", "SAUTÉ", "SAUTÉ"])
+    # --- Phase 2: does the smoke test's network assertion keep its promises? ---
+    relevant = [e for e in EXPECTED if e["smoke"]]
+    for i, e in enumerate(relevant):
+        fixture_path = FIXTURES / e["fixture"]
+        code, output = run_cmd(["node", str(SMOKE), str(fixture_path)])
+        if code == 3 or "COMMAND NOT FOUND" in output:
+            # No browser (or no node): incomplete environment, not a regression;
+            # skipped for all (no point retrying the rest).
+            smoke_skipped = True
+            for rest in relevant[i:]:
+                rows.append([rest["fixture"] + " (smoke)", "SKIPPED", "SKIPPED"])
             break
-        code_attendu, motif = MOTIF_SMOKE[a["smoke"]]
-        ok = verifier(a["fixture"] + " (smoke)", code_attendu, [motif], code, sortie, details)
+        expected_code, pattern = SMOKE_PATTERNS[e["smoke"]]
+        ok = check(e["fixture"] + " (smoke)", expected_code, [pattern], code, output, details)
         smoke_ok = smoke_ok and ok
-        lignes.append([a["fixture"] + " (smoke)", f"exit {code_attendu} → {code}", "OK" if ok else "ÉCART"])
+        rows.append([e["fixture"] + " (smoke)", f"exit {expected_code} → {code}", "OK" if ok else "MISMATCH"])
 
-    # --- Rapport ---
-    print(f"\n=== Tests des garde-fous ({len(ATTENDUS)} fixtures) ===\n")
-    larg = max(len(l[0]) for l in lignes)
-    for nom, attendu_obtenu, verdict in lignes:
-        print(f"  {nom.ljust(larg)}  {attendu_obtenu.ljust(14)}  {verdict}")
+    # --- Report ---
+    print(f"\n=== Guardrail tests ({len(EXPECTED)} fixtures) ===\n")
+    width = max(len(r[0]) for r in rows)
+    for name, expected_actual, verdict in rows:
+        print(f"  {name.ljust(width)}  {expected_actual.ljust(14)}  {verdict}")
     if details:
-        print("\n  Écarts :")
+        print("\n  Mismatches:")
         for d in details:
             print("    - " + d)
 
-    if not statique_ok or not smoke_ok:
-        print("\nÉCHEC : un garde-fou ne détecte plus ce qu'il doit détecter (ou bloque un outil conforme).")
+    if not static_ok or not smoke_ok:
+        print("\nFAILED: a guardrail no longer catches what it must (or blocks a compliant tool).")
         return 1
-    if smoke_saute:
-        print("\nPARTIEL : phase statique 100% verte, mais l'assertion réseau du smoke test n'a pas")
-        print("pu être testée (node ou Playwright/Chromium absents). En CI, ce code 3 doit être un échec.")
+    if smoke_skipped:
+        print("\nPARTIAL: static phase 100% green, but the smoke test's network assertion could")
+        print("not be exercised (node or Playwright/Chromium missing). In CI, this 3 must fail.")
         return 3
-    print("\nOK : chaque canal réseau connu est détecté, et les outils conformes passent.")
+    print("\nOK: every known network channel is caught, and compliant tools pass.")
     return 0
 
 

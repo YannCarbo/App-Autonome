@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Clean fixture: lib with inert strings</title>
+<!-- POSITIVE fixture: simulates an inlined minified lib containing URL strings
+     and a fetch() in dead code, the normal case for a minified build.
+     Expected: validator 0 errors with WARNINGS (URL string, fetch in
+     LIBRARIES), smoke test 0 outgoing requests. -->
+
+<!-- ===== SECTION: STYLES ===== -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; }
+  main { max-width: 700px; margin: 24px auto; padding: 0 20px; }
+</style>
+
+<!-- ===== SECTION: MARKUP ===== -->
+</head>
+<body>
+<header style="padding: 12px 20px">
+  <h1>Inert lib fixture</h1>
+  <span class="version">V1.0 · 2026-07-20</span>
+</header>
+<main>
+  <p>This fixture embeds a fake minified library whose URLs are only strings.</p>
+</main>
+<footer>
+  This tool runs entirely in your browser: no data is sent over the internet.
+</footer>
+
+<!-- ===== SECTION: LIBRARIES (do not edit) ===== -->
+<!-- fake-lib@1.0.0 - simulates a minified build: inert URL strings (license,
+     source map) and feature detection that never runs -->
+<script>
+var fakeLib={version:"1.0.0",homepage:"https://example.com/fake-lib",sourceMap:"https://cdn.example.com/fake-lib.min.js.map",supportsNetwork:function(){return typeof self!=="undefined"},_deadCode:function(){if(this.version==="never"){fetch("https://example.com/inert")}return null}};
+</script>
+
+<!-- ===== SECTION: APP CODE ===== -->
+<script>
+"use strict";
+document.querySelector("main p").textContent += " Lib version: " + fakeLib.version + ".";
+</script>
+</body>
+</html>
