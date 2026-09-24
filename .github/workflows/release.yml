@@ -10,7 +10,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'app-autonome/**'
+      - 'skills/app-autonome/**'
   # Manual trigger (Actions tab): re-publish without committing to the sources.
   workflow_dispatch:
 
@@ -35,7 +35,7 @@ jobs:
           # Never name a variable "ZIP": Info-ZIP reads the ZIP and ZIPOPT
           # environment variables as default options, and the archive would
           # then be created under the wrong name, silently.
-          SRC: app-autonome
+          SRC: skills/app-autonome
           OUT: app-autonome.skill
           ZIP_COPY: app-autonome.zip
         run: |
@@ -55,11 +55,15 @@ jobs:
           # produce an identical file.
           TS=$(date -u -d "@$(git log -1 --pretty=%ct)" +%Y%m%d%H%M.%S)
           find "$SRC" -exec touch -t "$TS" {} +
-          # -prune: never ship local artifacts (__pycache__, .pyc, .DS_Store):
-          # the CI checkout is clean because they are gitignored, but if a step
-          # generates a __pycache__ before the zip, the release stays clean.
-          find "$SRC" \( -name "__pycache__" -o -name "*.pyc" -o -name ".DS_Store" \) -prune -o -print \
-            | LC_ALL=C sort | TZ=UTC zip -qX -@ "$OUT"
+          # Zip from skills/ so the archive root stays app-autonome/ (the
+          # .skill import expects SKILL.md one folder down, not under skills/).
+          # -prune: never ship local artifacts (__pycache__, .pyc, .DS_Store).
+          ROOT=$(pwd)
+          (
+            cd "$(dirname "$SRC")"
+            find "$(basename "$SRC")" \( -name "__pycache__" -o -name "*.pyc" -o -name ".DS_Store" \) -prune -o -print \
+              | LC_ALL=C sort | TZ=UTC zip -qX -@ "$ROOT/$OUT"
+          )
           # Second artifact for the "folder" import (Mistral/Gemini): byte-for-byte
           # copy of the .skill, hence just as deterministic.
           cp "$OUT" "$ZIP_COPY"

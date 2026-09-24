@@ -14,6 +14,14 @@ Use AI to turn your working routines into local applications, then run them with
 
 Website: [English](https://yanncarbo.github.io/App-Autonome/) · [Français](https://yanncarbo.github.io/App-Autonome/fr/index.html)
 
+## Install with the skills CLI
+
+```bash
+npx skills add YannCarbo/App-Autonome
+```
+
+The skill is at `skills/app-autonome/SKILL.md`, the layout the [skills CLI](https://skills.sh) discovers.
+
 ## Install on your AI
 
 The skill follows the open **Agent Skills** format (a `SKILL.md` folder + resources), common to Claude, ChatGPT/Codex, Mistral and Gemini: **one single source** installs everywhere. The Release provides **two identical files**, the `.skill` (import as-is) and its `.zip` copy (unzip it for AIs that import a "folder"):
